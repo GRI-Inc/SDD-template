@@ -123,10 +123,10 @@ Description:
 - C-4 [SHOULD] 進捗は Issue ごとに 1 つの Workpad コメントに記録する（根拠: R-10）: 計画・受入条件・検証・進捗メモは、`## SDD Workpad` で始まる 1 つのコメントを更新し続けて記録する。完了報告のコメントを別に投稿しない。
 - C-5 [SHOULD] 設計判断は docs/sdd/ に書いて Pull Request に含める（根拠: P-5）: Issue が設計判断を求めている場合は、`docs/sdd/<Issue番号>-<件名>.md` に設計計画を書き、同じ Pull Request に含める。
 - C-6 [SHOULD NOT] 閉じた Pull Request のブランチを再利用しない（根拠: R-4）: クローズ済み・マージ済みの Pull Request のブランチは使わず、`origin/main` から新しいブランチを切る。
-- C-7 [SHOULD] コミットは小さく論理的に分ける（根拠: I-2）: 人間がレビューしやすいように、コミットを小さく分け、メッセージは `CONTRIBUTING_ja.md` の形式に従う。
+- C-7 [SHOULD] コミットは小さく論理的に分ける（根拠: I-2）: 人間がレビューしやすいように、コミットを小さく分け、メッセージは `CONTRIBUTING.md` の形式に従う。
 - C-8 [SHOULD] 最終メッセージには完了した作業とブロッカーだけを書く（根拠: I-3）: 無人の実行では、利用者への次の手順の案内を書かない。完了した作業と、進められなかった理由だけを書く。
 
-規範の版: `9528c7d8bf9b`
+規範の版: `08cde9d407b3`
 <!-- ethics:end -->
 
 ## ラベルによる状態マップ
@@ -166,7 +166,7 @@ GitHub Issues の状態は `open` / `closed` のみです。SDD の工程進行�
 ## Step 2: 実装（sdd:in-progress -> sdd:human-review）
 
 1. Workpad を実行チェックリストとして扱い、マイルストーンごとに即時更新する（再現完了、変更着地、検証実行、フィードバック対応）。
-2. コミットは小さく論理的に分け、メッセージは `CONTRIBUTING_ja.md` の形式（`feat:` / `fix:` / `docs:` / `refactor:` / `chore:`）に従い、本文末尾に `Fixes #<Issue番号>` を入れる。
+2. コミットは小さく論理的に分け、メッセージは `CONTRIBUTING.md` の形式（`feat:` / `fix:` / `docs:` / `refactor:` / `chore:`）に従い、本文末尾に `Fixes #<Issue番号>` を入れる。
 3. スコープに必要な検証を実行する。`spec-ai-writer/` に触れたら `uv run pytest` と `npx vitest run`、Markdown のみなら `markdownlint` 相当のチェックとリンク確認。
 4. 一時的な検証用の変更はコミット前に必ず戻す。実施内容は `Validation` / `Notes` に記録する。
 5. `git push` の前に必ず検証を通す。
