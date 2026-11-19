@@ -1,315 +1,226 @@
-> [!NOTE]
-> **日本語版をお探しの方へ**
-> このリポジトリは書籍『仕様駆動開発 実践入門』の練習用リポジトリです。
-> 日本語の README は [README_ja.md](./README_ja.md) をご覧ください。
-> **書籍の正誤表は[こちら](./docs/guides/errata.md)です。**
+# SDD-template：規範に従う自律エージェントで回す、Issue 駆動の仕様駆動開発
 
-# SDD (Spec-Driven Development) Practice Repository
-
-[English](./README.md) | [日本語](./README_ja.md)
-
-[![Elvez](https://img.shields.io/badge/Elvez-Product-3F61A7?style=flat-square)](https://elvez.co.jp/)
-[![IXV Ecosystem](https://img.shields.io/badge/IXV-Ecosystem-3F61A7?style=flat-square)](https://elvez.co.jp/ixv/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](https://opensource.org/licenses/MIT)
-[![Stars](https://img.shields.io/github/stars/elvezjp/SDD?style=social)](https://github.com/elvezjp/SDD/stargazers)
 
-This repository is the **practice repository** used in *Spec-Driven Development: A Practical Introduction*.
-In the book, it is referred to as the "practice repository" or "SDD repository."
+このリポジトリは、**仕様駆動開発（SDD）を Issue 駆動の自律エージェントで回す**ためのテンプレートです。
 
-The name "SDD" stands for **Spec-Driven Development**. This remote repository contains sample files organized around the "4 Principles and 7 Processes of Spec-Driven Development" described in the book, and serves as **a reference for how to structure a repository in real projects**.
+人間は仕様を書いて承認し、Issue を切ります。エージェントは Issue を拾って実装し、Pull Request を出します。そのエージェントが従う規範は [`ethics/`](ethics/README.md) に条文として置きます。**`ethics/` に条文を追記すれば、エージェントはその規範に従って動くようになります。**
 
-> For readers of the book: Please check the [Errata](./docs/guides/errata.md) for any known corrections.
+## 考え方
 
-## Purpose of This Repository
+このテンプレートは、3 つの置き場所を分けます。
 
-By referencing this remote repository, you can better understand the overall picture of Spec-Driven Development.
-This repository lets you practice writing specifications with Cursor while reading the book:
+| 置き場所 | 答える問い | 更新する主体 |
+|---|---|---|
+| 仕様（[`docs/specs/`](docs/specs/README.md) の Markdown） | **何を・なぜ** 作るか | 人間（AI は補助） |
+| Issue と Pull Request | **どこまで** 進んだか | エージェント |
+| 行動規範（`ethics/`） | エージェントは**どう振る舞うべきか** | 人間 |
 
-- Cloning or forking a remote repository with Cursor
-- Editing README.md in your local clone of the forked repository
-- Improving specifications through dialogue with AI
-- Basic Git operations (commit, push)
+「意図した動作をさせること」と「規則を守らせること」を別のものとして扱うのが、このテンプレートの中心です。意図は仕様と Issue で伝え、規則は行動規範で縛ります。エージェントは規範を自分では書き換えられません。
 
-**Important**: This remote repository is for reference only. If you want to make edits, always fork it first and then clone your own remote repository to work locally.
-
-## Use Cases
-
-- **Book Practice**: Follow along with *Spec-Driven Development: A Practical Introduction* and explore the 7-process sample files hands-on
-- **Spec-Driven Development Adoption Reference**: Use this repository as a structural template when introducing Spec-Driven Development to your team or organization
-- **Learning How to Write Specifications**: Refer to concrete examples of each process deliverable (project charters, specifications, design plans, etc.)
-
----
-
-## Fork vs Clone (Important)
-
-GitHub has two similar but distinct operations: **Fork** and **Clone**. It is important to use each one for the right purpose.
-
-### What is a Fork?
-- Copies this repository **under your own GitHub account**
-- Since it becomes your own repository, you can:
-  - Edit it freely
-  - Commit and push changes
-  - Work without affecting the original repository
-
-### What is a Clone?
-- Copies a GitHub repository **to your local machine (PC)**
-- Cloning alone does not create your own repository on GitHub
-
-### Fork vs Clone Comparison
-
-| Item | Fork (operation on GitHub) | Direct Clone (saves to local repository) |
-|------|---------------------------|------------------------------------------|
-| Creates your own repository on GitHub | ✅ | ❌ |
-| Allows free editing and pushing of README.md | ✅ | ❌ |
-| Failures don't affect the original repository | ✅ | ✅ |
-| Can submit Pull Requests | ✅ | ❌ |
-| For reference/viewing only | △ | ✅ |
-| Recommended use in this repository | **Editing & Practice** | **Viewing Only** |
-
-## Usage
-
-### 1. Fork or Clone This Remote Repository
-
-**Recommended: Fork**
-
-1. Open this remote repository on GitHub (https://github.com/elvezjp/SDD)
-2. Click the "Fork" button in the upper right to fork it to your account
-3. Clone your forked repository locally with Cursor:
-   - From the Cursor menu, select "File" > "Clone Repository"
-   - Enter the URL of your forked repository (e.g., `https://github.com/your-username/SDD.git`)
-   - Select a destination folder and click "Clone"
-
-In recent versions of Cursor, **"File > Clone Repository" may not appear in the menu**.
-In that case, use the **Command Palette** approach.
-
-**For Reference Only (Direct Clone)**
-
-1. From the Cursor menu, select "File" > "Clone Repository"
-2. Enter the following URL:
-   ```
-   https://github.com/elvezjp/SDD.git
-   ```
-3. Select a destination folder
-4. Click "Clone"
-
-### 2. Open and Review README.md
-
-After cloning or forking, open `README.md` in the left Explorer panel.
-
-**Note**: Avoid editing this remote repository (elvezjp/SDD) directly. If you want to make edits, always fork it first and clone your own remote repository to work locally.
-
-### 3. Write Specifications While Dialoguing with AI
-
-In the AI chat panel on the right, try asking questions like:
-
-- "Please read this README.md and tell me what information should be added."
-- "Are there any unclear points in this specification?"
-- "Is this written clearly?"
-
-### 4. Save and Share Your Changes (if you cloned your forked repository)
-
-Once you have finished editing locally:
-
-1. Save with `Ctrl+S` (or `Cmd+S` on Mac)
-2. Tell the AI chat "commit and push"
-   - Or manually commit and push from the Source Control panel
-
-**Note**: Do not push directly to this remote repository (elvezjp/SDD). Only push to your forked repository.
-
-## Directory Structure
-
-```
-SDD/
-├── README.md                    # This file (English)
-├── README_ja.md                 # Japanese version
-├── LICENSE                      # MIT License
-├── CONTRIBUTING.md              # Contribution guidelines
-├── SECURITY.md                  # Security policy
-├── CHANGELOG.md                 # Version history
-├── docs/                        # Supplementary materials
-│   ├── README.md               # Guide index
-│   ├── conversion/             # Conversion guides
-│   │   ├── markdown-basics.md  # Markdown basics
-│   │   ├── word-excel-conversion-guide.md # Word/Excel to Markdown guide
-│   │   └── oasys-ichitaro-conversion-guide.md # OASYS/Ichitaro to Markdown guide
-│   ├── tools/                  # Tool-related
-│   │   ├── cursor-videos.md    # Cursor video list
-│   │   ├── git-commands.md     # Git command reference
-│   │   ├── prompts.md          # Prompt collection (for Cursor, GitHub Copilot)
-│   │   └── scripts.md          # Script collection (CI/CD settings, Git hooks, etc.)
-│   └── guides/                 # Practical guides
-│       ├── scale-based-practice-guide.md  # Scale-based practice guide
-│       ├── 90-day-introduction-plan.md    # 90-day introduction plan
-│       ├── security-privacy-guide.md      # Security and privacy guide (regulated industries/public agencies)
-│       ├── troubleshooting.md  # Troubleshooting
-│       ├── markdown-friendly-document-creation.md # How to create Markdown-friendly documents
-│       └── errata.md           # Book errata
-├── examples/                    # Sample files (one file per process)
-│   ├── 01-principle-definition.md      # Principle definition process
-│   ├── 02-planning-requirement.md      # Planning & requirements process
-│   ├── 03-design-planning.md            # Design planning process
-│   ├── 04-task-breakdown.md              # Task breakdown process
-│   ├── 05-implementation.md             # Implementation process
-│   ├── 06-verification-acceptance.md    # Verification & acceptance process
-│   ├── 07-migration-operation.md        # Migration & operations process
-│   └── README.md                        # Sample file descriptions
-└── spec-ai-writer/              # Spec-Driven Development support AI tool (optional)
-    ├── README.md               # Tool description
-    ├── QUICKSTART.md           # Quick start guide
-    └── ...                     # Tool implementation files
+```mermaid
+flowchart LR
+    spec[仕様 Markdown] -->|人間が承認| issue[Issue]
+    issue -->|ラベルで着手を許可| agent[エージェント]
+    ethics[行動規範 ethics/] -->|プロンプトへ注入| agent
+    agent --> pr[Pull Request]
+    ethics -->|CI が規則を執行| pr
+    pr -->|人間が受入| merge[マージ]
 ```
 
-## The 4 Principles and 7 Processes of Spec-Driven Development
+## 行動規範：倫理階層
 
-This remote repository is structured around the following principles and processes:
+規範は、効力の強さで 4 層に分かれます。上位の層が下位の層を支配し、下位の条文は必ず上位の条文を根拠に持ちます。
 
-### 4 Principles
+| 層 | 答える問い | 改正できる人 | 逸脱 |
+|---|---|---|---|
+| 理念 | 何のためか | 最高責任者 | 不可 |
+| 原則 | どう判断するか | 人間（レビュー必須） | 不可 |
+| 規則 | 何をする・しないか | 人間（Pull Request のレビュー） | 例外に明記した場合のみ |
+| 慣習 | 普段どうするか | チームの裁量 | 理由を示せば可 |
 
-1. **Specifications are "living documents"**: They evolve alongside the project
-2. **Specifications are the "single source of truth"**: Referenced by all team members
-3. **Specifications assume "change and iteration"**: Updated while recording change history
-4. **Reduce costs with AI**: Leverage AI for specification refinement and review
+条文は Markdown で書きます。
 
-### 7 Processes
+```markdown
+## R-5 エージェントの Pull Request で規範と執行の仕組みを変更しない
 
-Each process is managed in a single Markdown file:
+- 強度: MUST NOT
+- 根拠: P-7
+- 適用点: pr
+- 検査: deterministic guards/protected_paths.py
+- 違反時: block
 
-1. **Principle Definition**: [`examples/01-principle-definition.md`](examples/01-principle-definition.md) (Project Charter)
-2. **Planning & Requirements**: [`examples/02-planning-requirement.md`](examples/02-planning-requirement.md) (Specification)
-3. **Design Planning**: [`examples/03-design-planning.md`](examples/03-design-planning.md) (Design Plan)
-4. **Task Breakdown**: [`examples/04-task-breakdown.md`](examples/04-task-breakdown.md) (Task Breakdown)
-5. **Implementation**: [`examples/05-implementation.md`](examples/05-implementation.md) (Implementation Log)
-6. **Verification & Acceptance**: [`examples/06-verification-acceptance.md`](examples/06-verification-acceptance.md) (Verification Log)
-7. **Migration & Operations**: [`examples/07-migration-operation.md`](examples/07-migration-operation.md) (Operations Log)
+エージェントが作る Pull Request に、理念・原則・規則の条文、ガード、…の変更を含めてはならない。
+```
 
-## Sample Project: Customer Management System
+規範がエージェントに届く経路は 3 つあります。
 
-The `examples/` directory contains a sample "Customer Management System" specification covering all 7 processes:
+| 経路 | 仕組み | 対象 |
+|---|---|---|
+| プロンプトへの注入 | 条文集を、[`WORKFLOW.md`](WORKFLOW.md)（無人実行のプロンプト）と [`AGENTS.md`](AGENTS.md)（対話で作業するエージェント向けの指示書）へ自動で書き込む | 全条文 |
+| Pull Request の自動検査 | CI が、決定的に検査できる規則を Pull Request ごとに実行する | `適用点: pr` かつ `検査: deterministic` の規則 |
+| 人間のレビュー | 受入のときに、自動では検査できない条文を確認する | `検査: judge` の条文 |
 
-- **Principle Definition**: How to write a project charter
-- **Planning & Requirements**: How to write a specification and operate by the 4 principles
-- **Design Planning**: Technology stack selection and AI utilization examples
-- **Task Breakdown**: Task decomposition granularity and progress management
-- **Implementation**: AI-assisted implementation and review records
-- **Verification & Acceptance**: Specification diff reports and acceptance testing
-- **Migration & Operations**: Operations improvement cycles and feedback integration
+「絶対に守らせたいこと」は、理念として宣言したうえで、必ず機械的に検査できる規則まで具体化します。理念を書いただけでは守られません。
 
-Each sample file clearly indicates which process it belongs to.
+書式と検査の詳細は [ethics/README.md](ethics/README.md) を参照してください。
 
-## spec-ai-writer (Specification Generation Tool)
+### 規範を追加する
 
-The `spec-ai-writer/` directory contains an optional AI tool that supports Spec-Driven Development. It conducts interviews via LLM API and automatically generates specification documents for all 7 processes (requires Python 3.9+ and Node.js).
+1. 該当する層のファイル（`ethics/10-principles/`、`ethics/20-rules/`、`ethics/30-customs/`）に条文を追記し、`根拠` に上位層の条文 ID を書く
+2. 機械的に検査できる規則なら、`ethics/guards/` にガードを書く
+3. 構造を検査し、エージェントのプロンプトへ反映する
 
-For setup instructions and usage details, see [spec-ai-writer/README.md](spec-ai-writer/README.md).
+   ```bash
+   python3 -m ethics lint ethics --strict --tree
+   python3 -m ethics sync
+   ```
 
-## FAQ
+4. 条文と、`WORKFLOW.md`・`AGENTS.md` の差分を、同じ Pull Request に含める
 
-### Q: Can I edit this remote repository?
+根拠の欠落などの構造の誤りと、プロンプトへの反映漏れは、CI が検出します。
 
-A: **This remote repository (elvezjp/SDD) is for reference only, and you do not have permission to edit it directly.** If you want to try editing, fork it first and then clone your forked repository to work locally.
+## Issue 駆動の流れ
 
-**Fork steps**:
-1. Open this remote repository on GitHub
-2. Click the "Fork" button in the upper right
-3. Clone your forked remote repository locally and work from there
+工程の進行は、Issue のラベルで表します。タスク 1 件 = Issue 1 件 = Pull Request 1 件です。
 
-### Q: What should I do if I encounter an error?
+| 工程 | ラベル | 動く主体 | 何が起きるか |
+|---|---|---|---|
+| 仕様の承認待ち | `sdd:backlog` | 人間 | 仕様をレビューし、受入条件を書く |
+| 着手可 | `sdd:todo` + `symphony` | 人間が付与 | エージェントが検知する |
+| 実装 | `sdd:in-progress` | エージェント | 計画・実装・検証を行い、Pull Request を作る |
+| 受入待ち | `sdd:human-review` | 人間 | Pull Request と仕様差分をレビューする |
+| 受入完了 | `sdd:merging` | エージェント | マージして Issue を閉じる |
+| 差し戻し | `sdd:rework` | エージェント | 新しいブランチでやり直す |
 
-A: `docs/guides/troubleshooting.md` contains common errors and their solutions. Please check there first. If the issue remains unresolved, ask a question in GitHub Issues.
+`symphony` ラベルの無い Issue は、エージェントの対象になりません。仕様の承認前に実装が走る事故は、このラベルを人間だけが付ける運用で防ぎます。
 
-### Q: Which should I use—the repository I created in Chapter 1, or this one?
+運用の詳細は [Issue 駆動開発ガイド](docs/guides/issue-driven-sdd.md) を参照してください。
 
-A: Either is fine. If you already created a repository in Chapter 1, you can continue using that. This remote repository is for those who skipped Chapter 1 or want to practice with a fresh repository.
+## はじめかた
 
-## About the Book
+1. このリポジトリをフォークし、ローカルにクローンする
+2. フォーク先のリポジトリで **Issues を有効にする**（フォークでは既定で無効です）
+3. `WORKFLOW.md` の `tracker.provider.repo` を、自分の `owner/repo` に書き換える
+4. ラベルを作成し、[openai/symphony](https://github.com/openai/symphony) の手順でランナーを用意する（[セットアップ手順](docs/guides/issue-driven-sdd.md#symphony-のセットアップ)）
+5. `ethics/` の条文を、自分の組織の規範に合わせて書き換える。`ethics/guards/` のガードが持つ保護対象と組織内ドメインも見直す
+6. 仕様を `docs/specs/` に書き、[Issue テンプレート](.github/ISSUE_TEMPLATE/sdd-task.yml)でタスクを切り、承認したら `sdd:todo` と `symphony` を付ける
 
-This remote repository is used in the following book:
+規範の仕組みは Python の標準ライブラリだけで動きます（Python 3.9 以上）。条文と仕組みは `ethics/` にまとまっているので、ディレクトリごと別のリポジトリへ持ち出せます。
 
-**"Spec-Driven Development: A Practical Introduction"**
+## コマンド
 
-This repository is the practice repository referenced throughout the entire book. Main usage locations:
+| コマンド | 用途 |
+|---|---|
+| `python3 -m ethics lint ethics --strict --tree` | 条文の構造を検査し、根拠のつながりを木で表示する |
+| `python3 -m ethics compile ethics` | 条文集プロンプトと、適用点ごとの検査の一覧を表示する |
+| `python3 -m ethics sync` | 条文集を `WORKFLOW.md` と `AGENTS.md` へ書き込む（`--check` で反映漏れを検出） |
+| `python3 -m ethics check-pr ethics --files-from <変更一覧> --body-file <本文>` | Pull Request に、決定的に検査できる規則を実行する |
+| `python3 -m ethics test` | 規範の仕組みのテストを実行する |
 
-- **Introduction**: Introduced as a source of practical resources (script collection, prompt collection, etc.)
-- **Chapter 2**: Introduced in detail as the practice repository (Section 2.5 "Utilizing the Practice Repository (SDD Repository)")
-- **Chapter 3**: Reference to Cursor video list (`docs/tools/cursor-videos.md`)
-- **Chapter 4**: Reference to Git command reference (`docs/tools/git-commands.md`)
-- **Chapter 5**: Reference to prompt collection (`docs/tools/prompts.md`) and 90-day introduction plan (`docs/guides/90-day-introduction-plan.md`)
-- **Chapter 10**: References to various guides (Markdown basics, Word/Excel conversion, OASYS/Ichitaro conversion, etc.)
-- **Chapter 11**: Reference to 90-day introduction plan (`docs/guides/90-day-introduction-plan.md`)
-- **Chapter 12**: Reference to script collection (`docs/tools/scripts.md`) and security & privacy guide (`docs/guides/security-privacy-guide.md`)
-- **Chapter 13**: References to 90-day introduction plan and prompt collection
+## ディレクトリ構成
 
-You can use the resources in this repository to practice Spec-Driven Development while reading the book.
+```
+SDD-template/
+├── README.md                    # このファイル
+├── AGENTS.md                    # リポジトリで作業するコーディングエージェント向けの指示書
+├── CLAUDE.md                    # Claude Code 向け。AGENTS.md を読み込む
+├── WORKFLOW.md                  # Symphony のワークフロー定義と、エージェント向けプロンプト
+├── ethics/                      # エージェントの行動規範（倫理階層）。条文と仕組みをまとめて持つ
+│   ├── README.md               # 書式、支配構造の原則、検査、接続方法
+│   ├── 00-ideals.md            # 理念
+│   ├── 10-principles/          # 原則
+│   ├── 20-rules/               # 規則
+│   ├── 30-customs/             # 慣習
+│   ├── guards/                 # 規則を決定的に検査するコード
+│   └── .tools/                 # 条文を適用するための道具（検査・コンパイル・執行）
+│       ├── cli.py              # `python3 -m ethics` のコマンド
+│       ├── spec.py             # 条文のパーサと構造 lint
+│       ├── compiler.py         # 条文集プロンプトとガード登録表へのコンパイル
+│       ├── sync.py             # エージェント向けプロンプトへの書き込み
+│       ├── prcheck.py          # Pull Request の検査
+│       ├── dspy_adapter.py     # DSPy のプログラムへの接続
+│       └── tests/              # テスト
+├── .github/
+│   ├── ISSUE_TEMPLATE/         # タスクの Issue テンプレート
+│   ├── pull_request_template.md # Pull Request の契約
+│   ├── scripts/                # CI から呼ぶスクリプト
+│   └── workflows/              # CI（規範の検査、Pull Request の検査、テスト）
+├── docs/                        # 仕様と補足資料
+│   ├── README.md               # ガイドの索引
+│   ├── specs/                  # 仕様（何を・なぜ作るか）。仕様はここに記述する
+│   └── guides/                 # Issue 駆動開発ガイド、セキュリティとプライバシーガイド
+├── archive/                     # 現在の運用では使わない資料（「7 つの工程」のサンプル、書籍の読者向けの資料など）
+├── CONTRIBUTING.md              # コントリビューションガイド
+├── SECURITY.md                  # セキュリティポリシー
+├── CHANGELOG.md                 # 変更履歴
+└── LICENSE                      # MIT ライセンス
+```
 
-## YouTube Channel
+## 仕様駆動開発の「4 つの原則」と「7 つの工程」
 
-We operate the YouTube channel **"ソフトウェアの作り方チャンネル Tech千一夜"**.
+エージェントが実装する対象は、仕様駆動開発の考え方で書かれた仕様です。
 
-This channel shares information about Cursor and Spec-Driven Development. We explain practical usage and the latest information in video format, so please take a look.
+### 「4 つの原則」
 
-We have also published a video summarizing responses and supplements to feedback received in reviews. Please check it out as well.  
-https://youtu.be/DilSKvi4aQw
+1. **仕様は"生きたドキュメント"**：プロジェクトとともに進化する
+2. **仕様は"信頼できる唯一の情報源"**：すべてのメンバーが参照する
+3. **仕様は"変更と反復が前提"**：変更履歴を記録しながら更新する
+4. **AI でコストを抑える**：AI を活用して仕様の詳細化やレビューを行う
 
-**Channel URL**: https://www.youtube.com/@tech1018/
+### 「7 つの工程」と、Issue 駆動での担い手
 
-**Cursor Video List**: [docs/tools/cursor-videos.md](docs/tools/cursor-videos.md) provides a list of Cursor-related videos.
+| 工程 | サンプル | Issue 駆動での担い手 |
+|---|---|---|
+| 1. 原則決定 | [01-principle-definition.md](archive/examples/01-principle-definition.md) | 人間（成果物は行動規範の理念 `ethics/00-ideals.md`） |
+| 2. 企画・要件定義 | [02-planning-requirement.md](archive/examples/02-planning-requirement.md) | 人間 |
+| 3. 設計計画 | [03-design-planning.md](archive/examples/03-design-planning.md) | 人間 |
+| 4. タスク分割 | [04-task-breakdown.md](archive/examples/04-task-breakdown.md) | 人間（Issue を切る） |
+| 5. 実装 | [05-implementation.md](archive/examples/05-implementation.md) | エージェント（Issue と Pull Request が記録になる） |
+| 6. 検証・受入 | [06-verification-acceptance.md](archive/examples/06-verification-acceptance.md) | エージェントが検証し、人間が受け入れる |
+| 7. 移行・運用 | [07-migration-operation.md](archive/examples/07-migration-operation.md) | 人間（フィードバックを新しい Issue にする） |
 
-## Next Steps
+[archive/examples/](archive/examples/README.md) には、サンプルプロジェクト「顧客管理システム」の 7 工程分の成果物が入っています。仕様を書くときの参考にしてください。
 
-1. Fork this remote repository (or clone it locally for reference)
-2. Open the forked remote repository locally with Cursor
-3. Edit README.md and write your project's specifications
-4. Grow your specifications through dialogue with AI
-5. Commit and push changes to reflect them in your forked remote repository
+## DSPy のプログラムに規範を守らせる
 
----
+行動規範は、[DSPy](https://dspy.ai/) で組んだプログラムにも接続できます。理念・原則・規則は入力の値として渡すので、プロンプト最適化の対象になりません。評価の指標は、規範の違反があればスコアを 0 とし、違反が無いときだけタスクの出来を評価します。
 
-## Repository Protection
+```python
+import dspy
+from ethics import compile_ethics
+from ethics.dspy_adapter import Governed, Judge, guard_tools, make_metric, with_ethics
 
-This remote repository is maintained for reference. Please note the following:
+compiled = compile_ethics("ethics")
+agent = Governed(
+    dspy.ReAct(with_ethics(MySignature, compiled), tools=guard_tools(my_tools, compiled)),
+    compiled,
+)
+metric = make_metric(compiled, my_task_metric, judge=Judge(lm=judge_lm))
+```
 
-- **Do not edit this remote repository (elvezjp/SDD) directly**
-- If you want to make edits, always fork it first and clone your own remote repository to work locally
-- This remote repository is maintained as a reference resource for all readers
+詳細は [ethics/README.md](ethics/README.md#dspy-との接続) を参照してください。Issue 駆動のエージェントは、この経路を通りません。
 
----
+## 現在の制約
 
-## Documentation
+- **`検査: judge` の条文は、自動では執行されません。** プロンプトで伝えたうえで、人間のレビューで確認します
+- **エージェントの Pull Request かどうかは、`symphony` ラベルまたは `symphony/` で始まるブランチ名で判定します。** ブランチ保護や CODEOWNERS と併用してください
+- **下位の条文が上位の条文を「緩めて」いないかという意味の検査は行いません。** 構造（根拠の有無と層の上下）だけを検査します
+- **Symphony の実機での実行は、まだ確認していません。** `WORKFLOW.md` は仕様に沿って書いた定義です
+- Symphony の参照実装は Codex を前提にしています。他のコーディングエージェントで回す場合は、`WORKFLOW.md` の `codex.command` を差し替えるか、別のランナーが必要です
 
-- [CHANGELOG.md](CHANGELOG.md) - Version history
-- [CONTRIBUTING.md](CONTRIBUTING.md) - How to contribute
-- [SECURITY.md](SECURITY.md) - Security policy
+## ドキュメント
 
-## Security
+- [AGENTS.md](AGENTS.md) - リポジトリで作業するコーディングエージェント向けの指示書（Claude Code は [CLAUDE.md](CLAUDE.md) 経由で読み込む）
+- [ethics/README.md](ethics/README.md) - 行動規範の書式、検査、接続方法
+- [docs/guides/issue-driven-sdd.md](docs/guides/issue-driven-sdd.md) - Issue 駆動の運用ガイド
+- [docs/README.md](docs/README.md) - 補足資料の索引
+- [CONTRIBUTING.md](CONTRIBUTING.md) - コントリビューション方法
+- [SECURITY.md](SECURITY.md) - セキュリティポリシー
+- [CHANGELOG.md](CHANGELOG.md) - 変更履歴
 
-For security details, see [SECURITY.md](SECURITY.md).
+## 由来とライセンス
 
-- This repository consists solely of documentation and sample files; no executable code is included
-- If you discover a vulnerability, please report it by email rather than opening a public Issue (info@elvez.co.jp)
+このリポジトリは、書籍『仕様駆動開発 実践入門』の練習用リポジトリである [elvezjp/SDD](https://github.com/elvezjp/SDD) をフォークし、Issue 駆動の自律エージェント運用と行動規範の仕組みを加えたものです。[archive/](archive/README.md) に移した資料は、フォーク元の内容を引き継いでいます。フォーク元に含まれていた仕様書の作成支援ツール（`spec-ai-writer`）は、このテンプレートの主題から外れるため取り除いています。
 
-## Contributing
-
-Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
-
-- Bug reports / typo fixes: [GitHub Issues](https://github.com/elvezjp/SDD/issues)
-- Feature proposals (new samples/guides, etc.): [GitHub Issues](https://github.com/elvezjp/SDD/issues)
-- Pull requests: [GitHub Pull Requests](https://github.com/elvezjp/SDD/pulls)
-
-## Changelog
-
-See [CHANGELOG.md](CHANGELOG.md) for details.
-
-## Background
-
-This tool was created as a small utility during the development of **IXV (Ixiv)**, a development support AI for Japanese development documents and specifications.
-
-IXV addresses the challenges of understanding, structuring, and utilizing Japanese documents in system development. This repository publishes a portion of that work.
-
-## License
-
-MIT License - See [LICENSE](LICENSE) for details.
-
-## Contact
-
-- **Email**: info@elvez.co.jp
-- **Recipient**: Elvez Inc. (株式会社エルブズ)
+MIT License - 詳細は [LICENSE](LICENSE) を参照してください。

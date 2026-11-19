@@ -1,0 +1,50 @@
+name: Ethics PR guard
+
+# ethics/ の条文のうち、`適用点: pr` かつ `検査: deterministic` のものを Pull Request ごとに執行する。
+# 検査を増やすときは条文とガードを追加する。このファイルを変える必要はない。
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize, ready_for_review, labeled, unlabeled]
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Run guards
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+          PR_HEAD: ${{ github.event.pull_request.head.ref }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          git diff --name-only "$BASE_SHA...HEAD" > "$RUNNER_TEMP/files.txt"
+          printf '%s' "$PR_BODY" > "$RUNNER_TEMP/body.md"
+
+          # 規範とガードは base ブランチのものを使う。Pull Request が、自分を検査する
+          # ガードや条文を書き換えても効かないようにするため。
+          # base にまだ仕組みが無い（導入時の Pull Request）場合だけ、head のものを使う。
+          if git cat-file -e "$BASE_SHA:ethics/.tools/prcheck.py" 2>/dev/null; then
+            git worktree add --detach "$RUNNER_TEMP/base" "$BASE_SHA"
+            cd "$RUNNER_TEMP/base"
+            echo "base ブランチの規範で検査します"
+          else
+            echo "base ブランチに仕組みが無いため、この Pull Request の規範で検査します"
+          fi
+
+          python3 -m ethics check-pr ethics \
+            --files-from "$RUNNER_TEMP/files.txt" \
+            --body-file "$RUNNER_TEMP/body.md" \
+            --labels "$PR_LABELS" \
+            --head "$PR_HEAD" \
+            --title "$PR_TITLE"
