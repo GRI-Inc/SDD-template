@@ -162,6 +162,31 @@ python3 -m ethics check-pr ethics --files-from /tmp/files.txt --body-file path/t
 
 小さな変更で設計判断が無い場合は、Issue テンプレートの「設計メモ」欄で十分です。ファイルは作らなくて構いません。
 
+## Claude Code で回す（`/sdd-run`）
+
+Symphony のランナーを用意しなくても、手元の Claude Code だけでサイクルを回せます。仕様は [docs/specs/claude-code-loop.md](../specs/claude-code-loop.md) にあります。
+
+| コマンド | 動作 |
+|----------|------|
+| `/sdd-run` | 1 周だけ進める。`symphony` ラベルの付いた open の Issue から 1 件選び、`WORKFLOW.md` の手順を実行する |
+| `/sdd-run 12` | Issue 12 番だけを対象にする |
+| `/loop 10m /sdd-run` | 10 分ごとに `/sdd-run` を繰り返す |
+
+Issue は `sdd:merging` → `sdd:rework` → `sdd:in-progress` → `sdd:todo` の優先順で選ばれます。対象が無いときは、何も変更せずに終わります。`/sdd-run` の定義は [.claude/skills/sdd-run/SKILL.md](../../.claude/skills/sdd-run/SKILL.md) にあり、実装の手順は `WORKFLOW.md` のプロンプト本文をそのまま使います。
+
+始める前に、次の 4 点を確認してください。
+
+- [ ] `gh auth status` で、対象のリポジトリを操作できるアカウントに認証されている
+- [ ] `git push` が、パスフレーズの入力なしで通る（鍵を `ssh-agent` に登録するか、`gh auth setup-git` で HTTPS の認証を `gh` に任せる）
+- [ ] `sdd:*` と `symphony` のラベルが作成済み
+- [ ] Claude Code の権限設定が、`gh` と `git` の実行を確認なしで許可している（確認の待ちでループが止まるため）
+
+`/loop` には次の制約があります。
+
+- Claude Code のセッションを開いている間だけ動く。応答の途中では起動しない
+- 繰り返しの設定は 7 日で失効する
+- 止めるときは、Claude に「ループを止めて」と伝える
+
 ## Symphony のセットアップ
 
 1. [openai/symphony](https://github.com/openai/symphony) の手順でランナーを用意する（Elixir 参照実装、または `SPEC.md` 準拠の自作）
@@ -196,6 +221,7 @@ python3 -m ethics check-pr ethics --files-from /tmp/files.txt --body-file path/t
 ## 関連ドキュメント
 
 - [WORKFLOW.md](../../WORKFLOW.md) - Symphony のワークフロー定義とエージェント向けプロンプト
+- [docs/specs/claude-code-loop.md](../specs/claude-code-loop.md) - Claude Code による Issue 駆動ループの仕様
 - [ethics/README.md](../../ethics/README.md) - エージェントの行動規範（倫理階層）の書式と検査
 - [タスク分割工程のサンプル](../../archive/examples/04-task-breakdown.md) - 30 分レビュー粒度の考え方
 - [スクリプト集](../../archive/docs/tools/scripts.md) - CI/CD の他の設定例

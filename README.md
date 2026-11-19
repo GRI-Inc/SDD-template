@@ -102,7 +102,7 @@ flowchart LR
 1. このリポジトリをフォークし、ローカルにクローンする
 2. フォーク先のリポジトリで **Issues を有効にする**（フォークでは既定で無効です）
 3. `WORKFLOW.md` の `tracker.provider.repo` を、自分の `owner/repo` に書き換える
-4. ラベルを作成し、[openai/symphony](https://github.com/openai/symphony) の手順でランナーを用意する（[セットアップ手順](docs/guides/issue-driven-sdd.md#symphony-のセットアップ)）
+4. ラベルを作成し、エージェントを動かす手段を用意する。手元の Claude Code で回す（[`/sdd-run`](docs/guides/issue-driven-sdd.md#claude-code-で回すsdd-run)）か、[openai/symphony](https://github.com/openai/symphony) のランナーを立てる（[セットアップ手順](docs/guides/issue-driven-sdd.md#symphony-のセットアップ)）
 5. `ethics/` の条文を、自分の組織の規範に合わせて書き換える。`ethics/guards/` のガードが持つ保護対象と組織内ドメインも見直す
 6. 仕様を `docs/specs/` に書き、[Issue テンプレート](.github/ISSUE_TEMPLATE/sdd-task.yml)でタスクを切り、承認したら `sdd:todo` と `symphony` を付ける
 
@@ -117,6 +117,7 @@ flowchart LR
 | `python3 -m ethics sync` | 条文集を `WORKFLOW.md` と `AGENTS.md` へ書き込む（`--check` で反映漏れを検出） |
 | `python3 -m ethics check-pr ethics --files-from <変更一覧> --body-file <本文>` | Pull Request に、決定的に検査できる規則を実行する |
 | `python3 -m ethics test` | 規範の仕組みのテストを実行する |
+| `/sdd-run`（Claude Code） | Issue 駆動のサイクルを 1 周進める。`/loop 10m /sdd-run` で繰り返す |
 
 ## ディレクトリ構成
 
@@ -126,6 +127,7 @@ SDD-template/
 ├── AGENTS.md                    # リポジトリで作業するコーディングエージェント向けの指示書
 ├── CLAUDE.md                    # Claude Code 向け。AGENTS.md を読み込む
 ├── WORKFLOW.md                  # Symphony のワークフロー定義と、エージェント向けプロンプト
+├── .claude/skills/sdd-run/      # Claude Code で Issue 駆動のサイクルを回すスキル（`/sdd-run`）
 ├── ethics/                      # エージェントの行動規範（倫理階層）。条文と仕組みをまとめて持つ
 │   ├── README.md               # 書式、支配構造の原則、検査、接続方法
 │   ├── 00-ideals.md            # 理念
