@@ -6,12 +6,14 @@ on:
     paths:
       - "ethics/**"
       - "ethic_layer/**"
+      - "WORKFLOW.md"
       - ".github/scripts/lint_ethics.py"
       - ".github/workflows/ethics-lint.yml"
   pull_request:
     paths:
       - "ethics/**"
       - "ethic_layer/**"
+      - "WORKFLOW.md"
       - ".github/scripts/lint_ethics.py"
       - ".github/workflows/ethics-lint.yml"
 
@@ -33,6 +35,9 @@ jobs:
       - name: Compile ethics
         run: python3 -m ethic_layer compile ethics
 
+      - name: Check that the agent prompt is in sync
+        run: python3 -m ethic_layer sync WORKFLOW.md --check
+
   test-ethic-layer:
     runs-on: ubuntu-latest
     steps:
@@ -49,4 +54,4 @@ jobs:
         run: pip install "dspy==3.5.0"
 
       - name: Run tests
-        run: python -m unittest discover -s ethic_layer/tests -t .
+        run: python -m unittest discover -b -s ethic_layer/tests -t .

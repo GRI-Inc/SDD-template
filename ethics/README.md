@@ -1,7 +1,14 @@
 # 倫理階層（ethics/）
 
-AI エージェントに守らせる規範を、効力の強さで 4 層に分けて Markdown で管理する雛形です。
+AI エージェントに守らせる規範を、効力の強さで 4 層に分けて Markdown で管理します。
 上位の層が下位の層を支配する関係を、lint で機械的に保ちます。
+
+このリポジトリでは、Issue 駆動で動くエージェントの行動規範そのものです。**ここに条文を追記すれば、エージェントはその規範に従って動くようになります。** 運用の全体像は [Issue 駆動開発ガイド](../docs/guides/issue-driven-sdd.md) を参照してください。
+
+```bash
+python3 -m ethic_layer lint ethics --strict --tree   # 構造を検査する
+python3 -m ethic_layer sync                          # WORKFLOW.md のプロンプトへ反映する
+```
 
 ## 階層
 
@@ -65,7 +72,7 @@ tier: rule
 | 強度 | — | 必須 | 必須 | 必須 | 原則・規則: `MUST` / `MUST NOT`、慣習: `SHOULD` / `SHOULD NOT` / `MAY` |
 | 根拠 | — | 必須 | 必須 | 必須 | 上位層の条文 ID。複数ならカンマ区切り |
 | 検査 | — | 必須 | 必須 | 任意 | `judge`（LLM 判定器）または `deterministic <ガードのパス>` |
-| 適用点 | — | — | 必須 | — | `input` / `plan` / `tool_call` / `output`。複数ならカンマ区切り |
+| 適用点 | — | — | 必須 | — | `input` / `plan` / `tool_call` / `output` / `pr`。複数ならカンマ区切り |
 | 違反時 | — | — | 必須 | — | `block`（止める）/ `refine`（再生成）/ `escalate`（人に委ねる） |
 | 例外 | — | — | 任意 | — | 逸脱を認める条件 |
 
@@ -141,10 +148,38 @@ def guard(event: dict) -> list[str]: ...
 | `tool_call` | `{"point", "tool": ツール名, "args": 引数の辞書}` |
 | `input` | `{"point", "inputs": 入力の辞書, "text": 入力を文字列にしたもの}` |
 | `output` | `{"point", "outputs": 出力の辞書, "text": 出力を文字列にしたもの}` |
+| `pr` | `{"point", "files": 変更されたパスの一覧, "body": 本文, "labels": ラベルの一覧, "head": ブランチ名, "title": 題名}` |
 
 ガードが例外を出した場合は、素通りさせず違反として扱います。
 
+## Issue 駆動のエージェントへの接続
+
+Issue 駆動で動くエージェント（Symphony など）には、次の 2 つの経路で規範を届けます。
+
+### プロンプトへの注入
+
+```bash
+python3 -m ethic_layer sync            # WORKFLOW.md を更新する
+python3 -m ethic_layer sync --check    # 反映漏れがあれば失敗する（CI 用）
+```
+
+`WORKFLOW.md` の `<!-- ethics:begin -->` と `<!-- ethics:end -->` の間を、4 層すべての条文集で置き換えます。末尾には規範の版（digest）が入り、エージェントはそれを Workpad に記録します。この区間は生成物なので、手で編集しないでください。
+
+### Pull Request の自動検査
+
+```bash
+python3 -m ethic_layer check-pr ethics --files-from files.txt --body-file body.md --labels symphony --head symphony/12-fix
+```
+
+`適用点: pr` かつ `検査: deterministic` の規則を実行します。CI では [ethics-pr-guard](../.github/workflows/ethics-pr-guard.yml) が Pull Request ごとに実行します。規則とガードを追加すれば、CI の定義を変えずに検査が増えます。
+
+CI は base ブランチ側の条文とガードで検査します。Pull Request が、自分を検査するガードを書き換えても効きません。
+
+`適用点: pr` でも `検査: judge` の規則は自動では検査されません。プロンプトで伝えたうえで、人間のレビューで確認します。
+
 ## DSPy との接続
+
+DSPy で組んだプログラムに規範を守らせる場合の接続です。Issue 駆動のエージェント（Symphony から起動するコーディングエージェント）はこの経路を通りません。
 
 `ethic_layer/dspy_adapter.py` が、コンパイル結果を DSPy のプログラムに接続します（DSPy 3.5.0 で動作確認）。
 
@@ -196,7 +231,11 @@ python3 -m unittest discover -s ethic_layer/tests -t .
 
 DSPy が入っていない環境では、アダプタのテストは飛ばされます。
 
-## 雛形の内容について
+## 同梱の条文について
 
-同梱の条文（I-1〜I-3 など）と `guards/pii_egress.py` は書き方を示すための例です。
-導入するときは、組織の規範に合わせて書き換えてください。
+| ファイル | 内容 |
+|---|---|
+| `*/core.md` と `guards/pii_egress.py` | 分野を問わない一般の規範。書き方の例を兼ねる |
+| `*/sdd.md`、`guards/pr_contract.py`、`guards/protected_paths.py` | このリポジトリの Issue 駆動エージェントが従う、仕様駆動開発の規範 |
+
+フォークして使う場合は、組織の規範に合わせて書き換えてください。`guards/protected_paths.py` の保護対象と、`guards/pii_egress.py` の組織内ドメインは、導入先に合わせた見直しが必要です。

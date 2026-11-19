@@ -120,6 +120,7 @@ SDD/
 ├── CONTRIBUTING.md              # コントリビューションガイド
 ├── SECURITY.md                  # セキュリティポリシー
 ├── CHANGELOG.md                 # バージョン履歴
+├── WORKFLOW.md                  # Symphony ワークフロー定義（Issue 駆動のエージェント実行）
 ├── docs/                        # 補足資料
 │   ├── README.md               # ガイドの索引
 │   ├── conversion/             # 変換ガイド
@@ -136,6 +137,7 @@ SDD/
 │       ├── 90-day-introduction-plan.md    # 90日間導入プラン
 │       ├── security-privacy-guide.md      # セキュリティとプライバシーガイド（規制産業・公的機関向け）
 │       ├── troubleshooting.md  # トラブルシューティング
+│       ├── issue-driven-sdd.md # Issue 駆動開発ガイド（SDD × Symphony）
 │       ├── markdown-friendly-document-creation.md # Markdownにしやすい文書の作り方
 │       └── errata.md           # 書籍の正誤表
 ├── examples/                    # サンプルファイル（「7 つの工程」ごとに1ファイル）

@@ -18,7 +18,8 @@ class LintTest(unittest.TestCase):
     def test_scaffold_is_clean(self):
         articles, findings = lint(SCAFFOLD)
         self.assertEqual([], [str(f) for f in findings])
-        self.assertEqual(12, len(articles))
+        self.assertEqual(len({a.id for a in articles}), len(articles))
+        self.assertEqual({"ideal", "principle", "rule", "custom"}, {a.tier for a in articles})
 
     def test_fixture_is_clean(self):
         self.assertEqual([], codes())

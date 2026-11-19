@@ -3,6 +3,8 @@
 使い方:
   python3 -m ethic_layer lint [ethics_dir] [--strict] [--tree]
   python3 -m ethic_layer compile [ethics_dir] [--json PATH]
+  python3 -m ethic_layer sync [WORKFLOW.md] [--check]
+  python3 -m ethic_layer check-pr [ethics_dir] --files-from PATH [--body-file PATH] [--labels a,b] [--head BRANCH]
 """
 
 from __future__ import annotations
@@ -12,7 +14,9 @@ import sys
 from pathlib import Path
 
 from .compiler import EthicsCompileError, compile_ethics
+from .prcheck import build_event, report
 from .spec import TIER_LABEL, TIERS, format_tree, lint
+from .sync import SyncError, sync_file
 
 
 def run_lint(args: argparse.Namespace) -> int:
@@ -58,11 +62,43 @@ def run_compile(args: argparse.Namespace) -> int:
         print("\n---- 慣習（最適化してよい指示文の初期値） ----\n")
         print(customs)
     print(f"\n---- digest {compiled.digest[:12]} ----")
-    for point in ("input", "plan", "tool_call", "output"):
+    for point in ("input", "plan", "tool_call", "output", "pr"):
         guards = ", ".join(a.id for a, _ in compiled.guards(point)) or "なし"
         judged = ", ".join(a.id for a in compiled.judged(point)) or "なし"
         print(f"{point}: ガード [{guards}] / 判定器 [{judged}]")
     return 0
+
+
+def run_sync(args: argparse.Namespace) -> int:
+    try:
+        compiled = compile_ethics(args.ethics_dir)
+        changed = sync_file(args.target, compiled, check=args.check)
+    except (EthicsCompileError, SyncError, OSError) as err:
+        print(err, file=sys.stderr)
+        return 1
+
+    if args.check and changed:
+        print(f"{args.target} の行動規範が ethics/ と一致していません。次を実行してください:")
+        print(f"  python3 -m ethic_layer sync {args.target}")
+        return 1
+    state = "更新しました" if changed else "最新です"
+    print(f"{args.target}: {state}（規範の版 {compiled.digest[:12]}）")
+    return 0
+
+
+def run_check_pr(args: argparse.Namespace) -> int:
+    try:
+        compiled = compile_ethics(args.ethics_dir)
+        files = [line.strip() for line in Path(args.files_from).read_text(encoding="utf-8").splitlines() if line.strip()]
+        body = Path(args.body_file).read_text(encoding="utf-8") if args.body_file else ""
+    except (EthicsCompileError, OSError) as err:
+        print(err, file=sys.stderr)
+        return 1
+
+    labels = [label.strip() for label in args.labels.split(",") if label.strip()]
+    lines, passed = report(compiled, build_event(files, body, labels, args.head, args.title))
+    print("\n".join(lines))
+    return 0 if passed else 1
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -79,6 +115,21 @@ def main(argv: list[str] | None = None) -> int:
     p_compile.add_argument("ethics_dir", nargs="?", default="ethics")
     p_compile.add_argument("--json", metavar="PATH", help="登録表を JSON で書き出す")
     p_compile.set_defaults(func=run_compile)
+
+    p_sync = sub.add_parser("sync", help="エージェント向けプロンプトのファイルへ条文集を書き込む")
+    p_sync.add_argument("target", nargs="?", default="WORKFLOW.md")
+    p_sync.add_argument("--ethics-dir", default="ethics")
+    p_sync.add_argument("--check", action="store_true", help="書き込まず、同期漏れがあれば失敗する")
+    p_sync.set_defaults(func=run_sync)
+
+    p_pr = sub.add_parser("check-pr", help="Pull Request に適用点 pr の決定的ガードを実行する")
+    p_pr.add_argument("ethics_dir", nargs="?", default="ethics")
+    p_pr.add_argument("--files-from", required=True, metavar="PATH", help="変更されたパスを 1 行ずつ書いたファイル")
+    p_pr.add_argument("--body-file", metavar="PATH", help="Pull Request の本文を書いたファイル")
+    p_pr.add_argument("--labels", default="", help="ラベルをカンマ区切りで")
+    p_pr.add_argument("--head", default="", help="Pull Request のブランチ名")
+    p_pr.add_argument("--title", default="")
+    p_pr.set_defaults(func=run_check_pr)
 
     args = parser.parse_args(argv)
     return args.func(args)

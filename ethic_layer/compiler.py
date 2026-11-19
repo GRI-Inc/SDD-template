@@ -193,6 +193,14 @@ class Compiled:
             return ""
         return CUSTOMS_PREAMBLE + "\n" + "\n".join(self._line(a) for a in items)
 
+    def agent_prompt(self) -> str:
+        """4 層すべてを 1 つにまとめた条文集。プロンプトを最適化しないエージェントに、そのまま渡す。"""
+        text = self.prompt()
+        items = self.by_tier("custom")
+        if items:
+            text += f"\n\n## {TIER_LABEL['custom']}\n{CUSTOMS_PREAMBLE}\n" + "\n".join(self._line(a) for a in items)
+        return text
+
     def article_text(self, article_id: str) -> str:
         """判定器に渡す、1 条文の全文。根拠の系譜と適合例・違反例を含む。"""
         a = self.articles[article_id]

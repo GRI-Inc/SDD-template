@@ -60,7 +60,7 @@ STRENGTH = {
     "rule": {"MUST", "MUST NOT"},
     "custom": {"SHOULD", "SHOULD NOT", "MAY"},
 }
-APPLY_POINTS = {"input", "plan", "tool_call", "output"}
+APPLY_POINTS = {"input", "plan", "tool_call", "output", "pr"}
 ON_VIOLATION = {"block", "refine", "escalate"}
 MAX_IDEALS = 7
 

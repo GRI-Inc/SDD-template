@@ -1,0 +1,80 @@
+name: SDD タスク（Issue 駆動開発）
+description: 仕様駆動開発のタスク分割工程で切り出した、1 PR で完結するタスク
+title: "[Task] "
+labels:
+  - sdd:backlog
+body:
+  - type: markdown
+    attributes:
+      value: |
+        タスク 1 件 = Issue 1 件 = PR 1 件です。「30 分でレビューできる粒度」を目安に切ってください。
+        作成時は `sdd:backlog` ラベルが付きます。仕様が承認され、受入条件と依存関係が揃ったら
+        人間が `sdd:todo` と `symphony` ラベルに差し替えることで、エージェントの対象になります。
+        運用ルールは [docs/guides/issue-driven-sdd.md](https://github.com/GRI-Inc/SDD-template/blob/main/docs/guides/issue-driven-sdd.md) を参照してください。
+
+  - type: input
+    id: spec-link
+    attributes:
+      label: 関連する仕様
+      description: このタスクの根拠となる仕様 Markdown への相対パスとセクション。仕様に無いことは実装されません。
+      placeholder: "examples/02-planning-requirement.md#機能要件 / spec-ai-writer/docs/SPEC.md#..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: goal
+    attributes:
+      label: 目的
+      description: このタスクで何が達成されるか。「なぜ」は仕様側に書かれている前提で、ここでは「何を」を簡潔に。
+      placeholder: 顧客情報登録 API を仕様 3.2 の入力検証ルールに従って実装する
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: 受入条件
+      description: チェックボックス形式。エージェントはここを Workpad に転記し、全件満たすまで受入待ちに進みません。
+      value: |
+        - [ ]
+        - [ ]
+    validations:
+      required: true
+
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation（検証手順）
+      description: 受入条件をどう確認するか。実行コマンド、手動確認手順、確認する画面など。
+      value: |
+        - [ ] `uv run pytest`（spec-ai-writer に触れる場合）
+        - [ ] `npx vitest run`（frontend に触れる場合）
+        - [ ]
+    validations:
+      required: true
+
+  - type: textarea
+    id: design
+    attributes:
+      label: 設計メモ（任意）
+      description: 設計計画工程で決めた方針、制約、採用しなかった案。長くなる場合は docs/sdd/<Issue番号>-<件名>.md に書き、ここにはリンクのみ。
+    validations:
+      required: false
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: 依存 Issue（任意）
+      description: 先に完了している必要がある Issue。`blocked by #N` の形式で 1 行ずつ。
+      placeholder: blocked by #12
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: readiness
+    attributes:
+      label: sdd:todo に昇格する前の確認（人間が記入）
+      options:
+        - label: 関連する仕様がレビュー済みで承認されている
+        - label: 受入条件が検証可能な形で書かれている
+        - label: 依存 Issue がすべて close されている、または依存なし

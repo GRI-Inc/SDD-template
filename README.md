@@ -126,6 +126,7 @@ SDD/
 ├── CONTRIBUTING.md              # Contribution guidelines
 ├── SECURITY.md                  # Security policy
 ├── CHANGELOG.md                 # Version history
+├── WORKFLOW.md                  # Symphony workflow definition (issue-driven agent runs)
 ├── docs/                        # Supplementary materials
 │   ├── README.md               # Guide index
 │   ├── conversion/             # Conversion guides
@@ -142,6 +143,7 @@ SDD/
 │       ├── 90-day-introduction-plan.md    # 90-day introduction plan
 │       ├── security-privacy-guide.md      # Security and privacy guide (regulated industries/public agencies)
 │       ├── troubleshooting.md  # Troubleshooting
+│       ├── issue-driven-sdd.md # Issue-driven development guide (SDD x Symphony)
 │       ├── markdown-friendly-document-creation.md # How to create Markdown-friendly documents
 │       └── errata.md           # Book errata
 ├── examples/                    # Sample files (one file per process)

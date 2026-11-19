@@ -29,6 +29,7 @@
 - [90日間導入プラン](guides/90-day-introduction-plan.md) - 段階的な導入計画
 - [セキュリティとプライバシーガイド](guides/security-privacy-guide.md) - 規制産業・公的機関向けのセキュリティ対応
 - [トラブルシューティング](guides/troubleshooting.md) - よくある問題と対処法
+- [Issue 駆動開発ガイド](guides/issue-driven-sdd.md) - SDD の 7 工程と Symphony 型の Issue 駆動エージェント運用の組み合わせ方
 - [Markdownにしやすい文書の作り方](guides/markdown-friendly-document-creation.md) - 将来の移行を見据えた文書作成
 - [書籍の正誤表](guides/errata.md) - 書籍発売後に判明した誤植や修正事項
 

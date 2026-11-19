@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Issue 駆動開発（SDD × Symphony）の運用ガイド
+    url: https://github.com/GRI-Inc/SDD-template/blob/main/docs/guides/issue-driven-sdd.md
+    about: ラベルの意味、人間とエージェントの責任分界、sdd:todo に昇格する基準を説明しています
