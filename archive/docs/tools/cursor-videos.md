@@ -181,4 +181,4 @@
 ## 関連リンク
 
 - [チャンネルトップページ](https://www.youtube.com/@tech1018/)
-- [README.md](../README.md) - リポジトリのトップページに戻る
+- [README.md](../../../README.md) - リポジトリのトップページに戻る

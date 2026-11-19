@@ -118,7 +118,7 @@ AIエージェントの指摘で必須項目の不備がなくなった状態で
 
 **良い例：**
 ```
-fix: examples/02-planning-requirement.md の誤字を修正
+fix: docs/guides/issue-driven-sdd.md の誤字を修正
 docs: Git push エラーのトラブルシューティングを追加
 feat: マルチチーム向けプロジェクトのサンプルを追加
 ```

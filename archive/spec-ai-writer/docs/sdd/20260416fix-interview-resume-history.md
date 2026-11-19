@@ -13,7 +13,7 @@ Web UI でインタビューを途中まで進めた状態で別画面に遷移�
 
 ### 背景
 
-`interview.json` への Q&A 永続化は正常に機能しているにもかかわらず、`POST /api/interview/start` が未完了工程を検出した際に保存済みの途中 Q&A を無視して `_generate_initial_question()` を呼ぶ実装になっている。そのため「同じ地点から再開」という [SPEC.md「5. 中断・再開機能」](../SPEC.md#L92-L99) の仕様と乖離が生じている。
+`interview.json` への Q&A 永続化は正常に機能しているにもかかわらず、`POST /api/interview/start` が未完了工程を検出した際に保存済みの途中 Q&A を無視して `_generate_initial_question()` を呼ぶ実装になっている。そのため「同じ地点から再開」という [SPEC.md「5. 中断・再開機能」](../../../../spec-ai-writer/docs/SPEC.md#L92-L99) の仕様と乖離が生じている。
 
 また `_reconstruct_chat_history()` は全工程完了時にのみ呼ばれており、途中再開では過去工程の Q&A も含め画面上のチャット履歴がすべて消える。フロントエンドでは `startInterview()` マウント時に `reset()` でストアを初期化したうえで `initial_message` だけを描画するため、`all_complete=False` の場合は `chat_history` が返却されても反映されない。
 

@@ -149,10 +149,8 @@ SDD-template/
 ├── docs/                        # 仕様と補足資料
 │   ├── README.md               # ガイドの索引
 │   ├── specs/                  # 仕様（何を・なぜ作るか）。仕様はここに記述する
-│   ├── guides/                 # 実践ガイド（Issue 駆動開発ガイドを含む）
-│   ├── tools/                  # プロンプト集、スクリプト集、Git コマンド一覧など
-│   └── conversion/             # 既存文書から Markdown への変換ガイド
-├── examples/                    # 「7 つの工程」のサンプル（工程ごとに 1 ファイル）
+│   └── guides/                 # Issue 駆動開発ガイド、セキュリティとプライバシーガイド
+├── archive/                     # 現在の運用では使わない資料（「7 つの工程」のサンプル、書籍の読者向けの資料など）
 ├── spec-ai-writer/              # 仕様書の作成を支援する AI ツール（オプション）
 ├── CONTRIBUTING.md              # コントリビューションガイド
 ├── SECURITY.md                  # セキュリティポリシー
@@ -175,15 +173,15 @@ SDD-template/
 
 | 工程 | サンプル | Issue 駆動での担い手 |
 |---|---|---|
-| 1. 原則決定 | [01-principle-definition.md](examples/01-principle-definition.md) | 人間 |
-| 2. 企画・要件定義 | [02-planning-requirement.md](examples/02-planning-requirement.md) | 人間 |
-| 3. 設計計画 | [03-design-planning.md](examples/03-design-planning.md) | 人間 |
-| 4. タスク分割 | [04-task-breakdown.md](examples/04-task-breakdown.md) | 人間（Issue を切る） |
-| 5. 実装 | [05-implementation.md](examples/05-implementation.md) | エージェント（Issue と Pull Request が記録になる） |
-| 6. 検証・受入 | [06-verification-acceptance.md](examples/06-verification-acceptance.md) | エージェントが検証し、人間が受け入れる |
-| 7. 移行・運用 | [07-migration-operation.md](examples/07-migration-operation.md) | 人間（フィードバックを新しい Issue にする） |
+| 1. 原則決定 | [01-principle-definition.md](archive/examples/01-principle-definition.md) | 人間 |
+| 2. 企画・要件定義 | [02-planning-requirement.md](archive/examples/02-planning-requirement.md) | 人間 |
+| 3. 設計計画 | [03-design-planning.md](archive/examples/03-design-planning.md) | 人間 |
+| 4. タスク分割 | [04-task-breakdown.md](archive/examples/04-task-breakdown.md) | 人間（Issue を切る） |
+| 5. 実装 | [05-implementation.md](archive/examples/05-implementation.md) | エージェント（Issue と Pull Request が記録になる） |
+| 6. 検証・受入 | [06-verification-acceptance.md](archive/examples/06-verification-acceptance.md) | エージェントが検証し、人間が受け入れる |
+| 7. 移行・運用 | [07-migration-operation.md](archive/examples/07-migration-operation.md) | 人間（フィードバックを新しい Issue にする） |
 
-`examples/` には、サンプルプロジェクト「顧客管理システム」の 7 工程分の成果物が入っています。
+[archive/examples/](archive/examples/README.md) には、サンプルプロジェクト「顧客管理システム」の 7 工程分の成果物が入っています。仕様を書くときの参考にしてください。
 
 ## DSPy のプログラムに規範を守らせる
 
@@ -228,6 +226,6 @@ metric = make_metric(compiled, my_task_metric, judge=Judge(lm=judge_lm))
 
 ## 由来とライセンス
 
-このリポジトリは、書籍『仕様駆動開発 実践入門』の練習用リポジトリである [elvezjp/SDD](https://github.com/elvezjp/SDD) をフォークし、Issue 駆動の自律エージェント運用と行動規範の仕組みを加えたものです。`docs/`、`examples/`、`spec-ai-writer/` は、フォーク元の内容を引き継いでいます。
+このリポジトリは、書籍『仕様駆動開発 実践入門』の練習用リポジトリである [elvezjp/SDD](https://github.com/elvezjp/SDD) をフォークし、Issue 駆動の自律エージェント運用と行動規範の仕組みを加えたものです。`spec-ai-writer/` と、[archive/](archive/README.md) に移した資料は、フォーク元の内容を引き継いでいます。
 
 MIT License - 詳細は [LICENSE](LICENSE) を参照してください。

@@ -197,6 +197,6 @@ python3 -m ethics check-pr ethics --files-from /tmp/files.txt --body-file path/t
 
 - [WORKFLOW.md](../../WORKFLOW.md) - Symphony のワークフロー定義とエージェント向けプロンプト
 - [ethics/README.md](../../ethics/README.md) - エージェントの行動規範（倫理階層）の書式と検査
-- [タスク分割工程のサンプル](../../examples/04-task-breakdown.md) - 30 分レビュー粒度の考え方
-- [スクリプト集](../tools/scripts.md) - CI/CD の他の設定例
-- [プロンプト集](../tools/prompts.md) - PR / Issue 説明文の生成プロンプト
+- [タスク分割工程のサンプル](../../archive/examples/04-task-breakdown.md) - 30 分レビュー粒度の考え方
+- [スクリプト集](../../archive/docs/tools/scripts.md) - CI/CD の他の設定例
+- [プロンプト集](../../archive/docs/tools/prompts.md) - PR / Issue 説明文の生成プロンプト
