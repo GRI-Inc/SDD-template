@@ -14,7 +14,7 @@ SDD と Symphony はどちらも「唯一の情報源」を持ちますが、対
 
 この 2 つを対立させず、**What / Why は repo の仕様、How / Status は Issue** に置くのがこの運用の骨格です。
 
-- 仕様（工程①〜③）は [`docs/specs/`](../specs/README.md) の Markdown に置き、人間が承認します（原則 P-8）。エージェントは読むだけで、憲章は変更しません。
+- 仕様（工程①〜③）は [`docs/specs/`](../specs/README.md) の Markdown に置き、人間が承認します（原則 P-8）。エージェントは読むだけです。工程①（原則決定）の成果物である「プロジェクト憲章」の役割は、行動規範の理念（[`ethics/00-ideals.md`](../../ethics/00-ideals.md)）が担います。
 - タスク（工程④）は **タスク 1 件 = Issue 1 件 = PR 1 件** に対応させます。SDD の「30 分レビュー粒度」は、Symphony の「1 Issue = 1 エージェント実行 = 1 PR」とそのまま重なります。
 - 実装・検証（工程⑤⑥）は Issue の Workpad と PR が記録そのものになります。仕様とは別に、手で実装記録を書く必要はなくなります。
 - 運用（工程⑦）で見つかったフィードバックは `sdd:backlog` の Issue として投入します。
@@ -87,7 +87,7 @@ stateDiagram-v2
 
 ### エージェントが規範を書き換えられない仕組み
 
-エージェントの PR（`symphony` ラベル、または `symphony/` で始まるブランチ）が、`ethics/`（慣習を除く条文、ガード、執行の仕組み）、プロジェクト憲章、`WORKFLOW.md`、`AGENTS.md`、`CLAUDE.md`、CI の定義を変更すると、規則 R-5 により CI が失敗します。CI は **base ブランチ側の条文とガード**で検査するため、PR の中でガードを書き換えても検査を逃れられません。
+エージェントの PR（`symphony` ラベル、または `symphony/` で始まるブランチ）が、`ethics/`（慣習を除く条文、ガード、執行の仕組み）、`WORKFLOW.md`、`AGENTS.md`、`CLAUDE.md`、CI の定義を変更すると、規則 R-5 により CI が失敗します。CI は **base ブランチ側の条文とガード**で検査するため、PR の中でガードを書き換えても検査を逃れられません。
 
 規範の見直しが必要だとエージェントが判断した場合は、`sdd:backlog` の Issue として起票させ、人間が改正します。
 
@@ -104,7 +104,7 @@ stateDiagram-v2
 
 ### エージェントがやること
 
-1. 行動規範（`WORKFLOW.md` に注入された `ethics/` の条文）に従う。憲章（`spec-ai-writer/docs/CONSTITUTION.md`）と Issue が指す仕様を読む
+1. 行動規範（`WORKFLOW.md` に注入された `ethics/` の条文）に従う。Issue が指す仕様を読む
 2. `## SDD Workpad` コメントを 1 つ作り、計画・受入条件・検証をそこに書き続ける
 3. 仕様に書かれたことだけを実装する。仕様に無い改善は `sdd:backlog` Issue として起票する
 4. 仕様との乖離を見つけたら、同じ PR で仕様も更新し、PR の「仕様差分」に理由を書く

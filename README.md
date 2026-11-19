@@ -42,7 +42,7 @@ flowchart LR
 条文は Markdown で書きます。
 
 ```markdown
-## R-5 エージェントの Pull Request で規範・憲章・執行の仕組みを変更しない
+## R-5 エージェントの Pull Request で規範と執行の仕組みを変更しない
 
 - 強度: MUST NOT
 - 根拠: P-7
@@ -151,7 +151,6 @@ SDD-template/
 │   ├── specs/                  # 仕様（何を・なぜ作るか）。仕様はここに記述する
 │   └── guides/                 # Issue 駆動開発ガイド、セキュリティとプライバシーガイド
 ├── archive/                     # 現在の運用では使わない資料（「7 つの工程」のサンプル、書籍の読者向けの資料など）
-├── spec-ai-writer/              # 仕様書の作成を支援する AI ツール（オプション）
 ├── CONTRIBUTING.md              # コントリビューションガイド
 ├── SECURITY.md                  # セキュリティポリシー
 ├── CHANGELOG.md                 # 変更履歴
@@ -173,7 +172,7 @@ SDD-template/
 
 | 工程 | サンプル | Issue 駆動での担い手 |
 |---|---|---|
-| 1. 原則決定 | [01-principle-definition.md](archive/examples/01-principle-definition.md) | 人間 |
+| 1. 原則決定 | [01-principle-definition.md](archive/examples/01-principle-definition.md) | 人間（成果物は行動規範の理念 `ethics/00-ideals.md`） |
 | 2. 企画・要件定義 | [02-planning-requirement.md](archive/examples/02-planning-requirement.md) | 人間 |
 | 3. 設計計画 | [03-design-planning.md](archive/examples/03-design-planning.md) | 人間 |
 | 4. タスク分割 | [04-task-breakdown.md](archive/examples/04-task-breakdown.md) | 人間（Issue を切る） |
@@ -202,10 +201,6 @@ metric = make_metric(compiled, my_task_metric, judge=Judge(lm=judge_lm))
 
 詳細は [ethics/README.md](ethics/README.md#dspy-との接続) を参照してください。Issue 駆動のエージェントは、この経路を通りません。
 
-## spec-ai-writer（仕様書の作成支援ツール）
-
-`spec-ai-writer/` には、仕様の作成を支援するオプションの AI ツールが入っています。LLM の API を使ってインタビュー形式で対話し、「7 つの工程」の仕様書を生成します。使い方は [spec-ai-writer/README.md](spec-ai-writer/README.md) を参照してください。
-
 ## 現在の制約
 
 - **`検査: judge` の条文は、自動では執行されません。** プロンプトで伝えたうえで、人間のレビューで確認します
@@ -226,6 +221,6 @@ metric = make_metric(compiled, my_task_metric, judge=Judge(lm=judge_lm))
 
 ## 由来とライセンス
 
-このリポジトリは、書籍『仕様駆動開発 実践入門』の練習用リポジトリである [elvezjp/SDD](https://github.com/elvezjp/SDD) をフォークし、Issue 駆動の自律エージェント運用と行動規範の仕組みを加えたものです。`spec-ai-writer/` と、[archive/](archive/README.md) に移した資料は、フォーク元の内容を引き継いでいます。
+このリポジトリは、書籍『仕様駆動開発 実践入門』の練習用リポジトリである [elvezjp/SDD](https://github.com/elvezjp/SDD) をフォークし、Issue 駆動の自律エージェント運用と行動規範の仕組みを加えたものです。[archive/](archive/README.md) に移した資料は、フォーク元の内容を引き継いでいます。フォーク元に含まれていた仕様書の作成支援ツール（`spec-ai-writer`）は、このテンプレートの主題から外れるため取り除いています。
 
 MIT License - 詳細は [LICENSE](LICENSE) を参照してください。

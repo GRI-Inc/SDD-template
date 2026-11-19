@@ -22,7 +22,9 @@
 ### 変更
 
 - **プロジェクトの位置づけ**: 書籍の練習用リポジトリから、Issue 駆動の自律エージェントで仕様駆動開発を回すためのテンプレートへ方針を変更し、`README.md` を書き直しました。
-- **使わなくなった資料を `archive/` へ移動**: 「7 つの工程」のサンプル（`examples/`）、書籍の読者向けの資料（`docs/tools/`、`docs/conversion/`、`docs/guides/` の一部）、spec-ai-writer の過去の作業記録（`spec-ai-writer/docs/sdd/`）を、元の相対的な位置を保って `archive/` に移しました。
+- **`spec-ai-writer` を削除**: 仕様書の作成支援ツール `spec-ai-writer/` と、その専用の CI（`ci.yml`）、過去の作業記録を取り除きました。このテンプレートの主題（Issue 駆動の運用と行動規範）から外れるためです。ツールはフォーク元の [elvezjp/SDD](https://github.com/elvezjp/SDD) で引き続き入手できます。以下に残る `spec-ai-writer` に関する記述は、削除前の履歴です。
+- **プロジェクト憲章を理念に一本化**: これまで憲章として参照していた `spec-ai-writer/docs/CONSTITUTION.md` を廃し、仕様駆動開発の原則決定工程の成果物は、行動規範の理念（`ethics/00-ideals.md`）が担うことにしました。あわせて、原則 P-7 と規則 R-5 から「憲章」の記述を外しています。
+- **使わなくなった資料を `archive/` へ移動**: 「7 つの工程」のサンプル（`examples/`）、書籍の読者向けの資料（`docs/tools/`、`docs/conversion/`、`docs/guides/` の一部）を、元の相対的な位置を保って `archive/` に移しました。
 - **ドキュメントを日本語に一本化**: `README.md`、`CHANGELOG.md`、`CONTRIBUTING.md`、`SECURITY.md` の英語版を削除し、日本語版（`*_ja.md`）をこれらのファイル名に移しました。`*_ja.md` へのリンクは、接尾辞の無いファイル名に読み替えてください。
 - **spec-ai-writer / ブランドカラー統一**: UI 全体のカラーテーマをエルブズのブランドカラー（`#3A5CA8`）に統一しました（Issue #84 T7）。
 - **spec-ai-writer / プロジェクト説明フィールドを削除**: プロジェクト作成フォームから「説明」フィールドを削除し、入力項目をプロジェクト名のみに絞りました（Issue #84 T6）。

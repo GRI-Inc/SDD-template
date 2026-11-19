@@ -12,7 +12,6 @@
 | [docs/tools/](docs/tools/) | プロンプト集、スクリプト集、Git コマンド一覧、Cursor 関連動画一覧 | `docs/tools/` |
 | [docs/conversion/](docs/conversion/) | Word / Excel / OASYS / 一太郎から Markdown への変換ガイド、Markdown 記法の基本 | `docs/conversion/` |
 | [docs/guides/](docs/guides/) | 規模別実践ガイド、90 日間導入プラン、Markdown にしやすい文書の作り方、トラブルシューティング、書籍の正誤表 | `docs/guides/` |
-| [spec-ai-writer/docs/sdd/](spec-ai-writer/docs/sdd/) | spec-ai-writer の過去の作業記録（変更ごとの仕様・設計・実装・検証の記録） | `spec-ai-writer/docs/sdd/` |
 
 ## 扱い
 

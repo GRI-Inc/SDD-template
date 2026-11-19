@@ -47,8 +47,7 @@ body:
       label: Validation（検証手順）
       description: 受入条件をどう確認するか。実行コマンド、手動確認手順、確認する画面など。
       value: |
-        - [ ] `uv run pytest`（spec-ai-writer に触れる場合）
-        - [ ] `npx vitest run`（frontend に触れる場合）
+        - [ ]
         - [ ]
     validations:
       required: true

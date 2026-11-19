@@ -15,7 +15,7 @@ from ethics.tests.fixtures import CUSTOMS, REPO_ROOT, SCAFFOLD, write_tree
 GOOD_BODY = """\
 ## 関連する仕様
 
-[SPEC.md](spec-ai-writer/docs/SPEC.md)
+[example.md](docs/specs/example.md)
 
 ## 仕様差分
 
@@ -127,7 +127,7 @@ class PrGuardTest(unittest.TestCase):
         self.assertEqual(["R-9"], [a.id for a in unchecked(self.compiled)])
 
     def test_clean_agent_pr_passes(self):
-        self.assertEqual([], self.ids(files=["spec-ai-writer/spec_ai_writer/app.py"], labels=["symphony"], head="symphony/12-fix"))
+        self.assertEqual([], self.ids(files=["src/app.py"], labels=["symphony"], head="symphony/12-fix"))
 
     def test_pr_body_contract(self):
         self.assertEqual(["R-4"] * 3, self.ids(files=["README.md"], body="本文だけ"))
@@ -144,7 +144,6 @@ class PrGuardTest(unittest.TestCase):
             "ethics/README.md",
             "AGENTS.md",
             "CLAUDE.md",
-            "spec-ai-writer/docs/CONSTITUTION.md",
             "WORKFLOW.md",
             ".github/workflows/ci.yml",
         ]

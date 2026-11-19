@@ -32,7 +32,7 @@ Fixes #
 
 ## テスト計画
 
-- [ ] <!-- 実行したコマンドと結果。例: `uv run pytest` green -->
+- [ ] <!-- 実行したコマンドと結果。例: `python3 -m ethics test` green -->
 - [ ] <!-- Issue の Validation 項目をすべて満たしたか -->
 
 ## チェックリスト

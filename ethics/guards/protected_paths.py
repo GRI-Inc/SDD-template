@@ -1,4 +1,4 @@
-"""R-5「エージェントの Pull Request で規範・憲章・執行の仕組みを変更しない」の決定的ガード。
+"""R-5「エージェントの Pull Request で規範と執行の仕組みを変更しない」の決定的ガード。
 
 エージェントの Pull Request かどうかは、`symphony` ラベル、または `symphony/` で始まるブランチ名で判定する。
 適用点 pr の event: {"point": "pr", "files": [変更されたパス], "labels": [...], "head": ブランチ名, "body": 本文}
@@ -13,7 +13,6 @@ AGENT_BRANCH_PREFIX = "symphony/"
 # `ethics/` は条文・ガード・条文を適用する道具（.tools）をまとめて持つので、全体を保護する。
 PROTECTED = (
     "ethics/",
-    "spec-ai-writer/docs/CONSTITUTION.md",
     "WORKFLOW.md",
     "AGENTS.md",
     "CLAUDE.md",

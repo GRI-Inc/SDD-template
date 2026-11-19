@@ -55,30 +55,20 @@ git clone https://github.com/あなたのユーザー名/SDD.git
 cd SDD
 ```
 
-ドキュメント・サンプルファイルへのコントリビューションには追加の依存関係は不要です。
+ドキュメントへのコントリビューションには追加の依存関係は不要です。
 
-**`spec-ai-writer/`** へのコントリビューションには追加のセットアップが必要です：
-
-```bash
-cd spec-ai-writer
-uv sync --extra dev   # Python 依存関係（Python 3.10 以上が必要）
-cd frontend && npm install  # TypeScript/React 依存関係
-```
+行動規範の仕組み（`ethics/`）は Python の標準ライブラリだけで動きます（Python 3.9 以上）。追加のセットアップは不要です。
 
 ## テストの実行方法
 
 ドキュメント・サンプルファイルの変更については、ソースコードのテスト方針はありません。変更したドキュメントを **AIエージェントで検証** することをテストとして実施してください。
 
-**`spec-ai-writer/`** のソースコードを変更した場合は、テストスイートを実行してください：
+**`ethics/`**（条文、ガード、`.tools/`）を変更した場合は、次を実行してください：
 
 ```bash
-# Python
-cd spec-ai-writer
-pytest
-
-# フロントエンド（TypeScript/React）
-cd spec-ai-writer/frontend
-npm test
+python3 -m ethics lint ethics --strict   # 条文の構造
+python3 -m ethics sync --check           # エージェント向けプロンプトへの反映漏れ
+python3 -m ethics test                   # 道具のテスト
 ```
 
 **検証手順：**
@@ -140,30 +130,13 @@ Issue や PR を参照する場合は、コミットメッセージ本文末尾�
 - リポジトリ内のリンクは相対パスで記載する（例：`[CHANGELOG.md](CHANGELOG.md)`）
 - 日付は ISO 8601 形式で記載する（`YYYY-MM-DD`）
 
-## `spec-ai-writer` のリリース手順
+## リリース手順
 
-`spec-ai-writer` サブプロジェクトは Python パッケージと React フロントエンドを同梱して配布します。バージョン番号は **以下のすべての箇所で完全に一致させる必要があります**。Python パッケージとフロントエンドでバージョンがずれると、リリースノートやサポート対応の際にどの版の話か不明確になります。
-
-バージョンを上げる際（例：`1.0.3` → `1.0.4`）は、必ず **同一コミット内で** 以下のすべてを更新してください。
-
-| ファイル | フィールド |
-|---------|----------|
-| `spec-ai-writer/pyproject.toml` | `[project] version` |
-| `spec-ai-writer/frontend/package.json` | トップレベルの `version` |
-| `CHANGELOG.md` | 新しい `## [X.Y.Z] - YYYY-MM-DD` セクション |
-
-編集後は `spec-ai-writer/` 内で `uv sync --extra dev` を、`spec-ai-writer/frontend/` 内で `npm install` を実行してロックファイルを再生成してください。Pythonソースと Reactコンポーネントはバージョンをランタイムに取得するため、それ以外のファイル編集は不要です。整合性は次のコマンドで素早く確認できます。
-
-```bash
-grep -E "^version" spec-ai-writer/pyproject.toml
-grep '"version"' spec-ai-writer/frontend/package.json | head -1
-```
-
-両行のバージョンが一致していれば OK です。ずれを見つけた場合は、後回しにせずその場で同一コミットに含めて修正してください（後から小さな修正コミットを積むと `git blame` が読みにくくなります）。
+バージョンは `CHANGELOG.md` で管理します。
 
 ### バージョンを上げるタイミング
 
-リポジトリに意味のある変更（新機能・バグ修正・ドキュメントの大きな追加や変更など）があったときにバージョンを上げます。依存ライブラリの更新のみ（Dependabot によるセキュリティパッチなど）ではバージョンを上げません。その場合は `[Unreleased]` に記録しておき、次に意味のある変更をリリースする際にまとめて含めてください。
+リポジトリに意味のある変更（新機能・バグ修正・ドキュメントの大きな追加や変更など）があったときにバージョンを上げます。小さな修正だけのときは `[Unreleased]` に記録しておき、次に意味のある変更をリリースする際にまとめて含めてください。
 
 ### タグを打つ手順
 
