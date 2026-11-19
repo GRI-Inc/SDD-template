@@ -6,7 +6,7 @@
   3. 判定対象の条文一覧 `Compiled.judged(point)`（metric ゲートが LLM 判定器に渡す）
 
 lint でエラーが出る条文集はコンパイルしない。支配構造が壊れた規範を実行時に持ち込まないため。
-標準ライブラリだけで動く。DSPy との接続は `ethic_layer.dspy_adapter` が担う。
+標準ライブラリだけで動く。DSPy との接続は `ethics.dspy_adapter` が担う。
 """
 
 from __future__ import annotations
@@ -113,7 +113,7 @@ def _compile_article(a: Article) -> CompiledArticle:
 
 def _load_guard(root: Path, article: CompiledArticle) -> GuardFn:
     path = root / article.guard_path
-    name = "ethic_layer_guard_" + hashlib.sha256(str(path).encode()).hexdigest()[:12]
+    name = "ethics_guard_" + hashlib.sha256(str(path).encode()).hexdigest()[:12]
     spec = importlib.util.spec_from_file_location(name, path)
     if spec is None or spec.loader is None:
         raise EthicsCompileError(f"{article.id}: ガードを読み込めません: {article.guard_path}")

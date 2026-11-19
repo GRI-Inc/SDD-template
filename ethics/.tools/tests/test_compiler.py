@@ -5,8 +5,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from ethic_layer import EthicsCompileError, compile_ethics
-from ethic_layer.tests.fixtures import PRINCIPLES, RULES, SCAFFOLD, write_tree
+from ethics import EthicsCompileError, compile_ethics
+from ethics.tests.fixtures import PRINCIPLES, RULES, SCAFFOLD, write_tree
 
 
 class CompilerTest(unittest.TestCase):

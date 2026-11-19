@@ -68,7 +68,7 @@ stateDiagram-v2
 
 | 経路 | 仕組み | 対象 |
 |------|--------|------|
-| プロンプトへの注入 | `python3 -m ethic_layer sync` が、条文集を `WORKFLOW.md` の `<!-- ethics:begin -->` 〜 `<!-- ethics:end -->` に書き込む | 全条文 |
+| プロンプトへの注入 | `python3 -m ethics sync` が、条文集を `WORKFLOW.md` と `AGENTS.md` の `<!-- ethics:begin -->` 〜 `<!-- ethics:end -->` に書き込む | 全条文 |
 | PR の自動検査 | [ethics-pr-guard](../../.github/workflows/ethics-pr-guard.yml) が、`適用点: pr` かつ `検査: deterministic` の規則を PR ごとに実行する | 決定的に検査できる規則 |
 | 人間のレビュー | `sdd:human-review` で、自動では検査できない条文を確認する | `検査: judge` の条文 |
 
@@ -79,15 +79,15 @@ stateDiagram-v2
 3. 構造を検査し、プロンプトへ反映する
 
    ```bash
-   python3 -m ethic_layer lint ethics --strict --tree
-   python3 -m ethic_layer sync
+   python3 -m ethics lint ethics --strict --tree
+   python3 -m ethics sync
    ```
 
-4. 条文と `WORKFLOW.md` の差分を同じ PR に含める。CI は、根拠の欠落などの構造の誤りと、`WORKFLOW.md` への反映漏れを検出する
+4. 条文と、`WORKFLOW.md`・`AGENTS.md` の差分を同じ PR に含める。CI は、根拠の欠落などの構造の誤りと、反映漏れを検出する
 
 ### エージェントが規範を書き換えられない仕組み
 
-エージェントの PR（`symphony` ラベル、または `symphony/` で始まるブランチ）が、理念・原則・規則の条文、ガード、`ethic_layer/`、プロジェクト憲章、`WORKFLOW.md`、CI の定義を変更すると、規則 R-5 により CI が失敗します。CI は **base ブランチ側の条文とガード**で検査するため、PR の中でガードを書き換えても検査を逃れられません。
+エージェントの PR（`symphony` ラベル、または `symphony/` で始まるブランチ）が、`ethics/`（慣習を除く条文、ガード、執行の仕組み）、プロジェクト憲章、`WORKFLOW.md`、`AGENTS.md`、`CLAUDE.md`、CI の定義を変更すると、規則 R-5 により CI が失敗します。CI は **base ブランチ側の条文とガード**で検査するため、PR の中でガードを書き換えても検査を逃れられません。
 
 規範の見直しが必要だとエージェントが判断した場合は、`sdd:backlog` の Issue として起票させ、人間が改正します。
 
@@ -145,7 +145,7 @@ python3 .github/scripts/check_pr_body.py path/to/pr_body.md
 
 ```bash
 git diff --name-only origin/main...HEAD > /tmp/files.txt
-python3 -m ethic_layer check-pr ethics --files-from /tmp/files.txt --body-file path/to/pr_body.md --labels symphony
+python3 -m ethics check-pr ethics --files-from /tmp/files.txt --body-file path/to/pr_body.md --labels symphony
 ```
 
 ## `docs/sdd/` の運用変更

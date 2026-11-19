@@ -34,7 +34,7 @@ jobs:
           # 規範とガードは base ブランチのものを使う。Pull Request が、自分を検査する
           # ガードや条文を書き換えても効かないようにするため。
           # base にまだ仕組みが無い（導入時の Pull Request）場合だけ、head のものを使う。
-          if git cat-file -e "$BASE_SHA:ethic_layer/prcheck.py" 2>/dev/null; then
+          if git cat-file -e "$BASE_SHA:ethics/.tools/prcheck.py" 2>/dev/null; then
             git worktree add --detach "$RUNNER_TEMP/base" "$BASE_SHA"
             cd "$RUNNER_TEMP/base"
             echo "base ブランチの規範で検査します"
@@ -42,7 +42,7 @@ jobs:
             echo "base ブランチに仕組みが無いため、この Pull Request の規範で検査します"
           fi
 
-          python3 -m ethic_layer check-pr ethics \
+          python3 -m ethics check-pr ethics \
             --files-from "$RUNNER_TEMP/files.txt" \
             --body-file "$RUNNER_TEMP/body.md" \
             --labels "$PR_LABELS" \

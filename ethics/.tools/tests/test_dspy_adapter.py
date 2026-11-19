@@ -5,8 +5,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from ethic_layer import compile_ethics
-from ethic_layer.tests.fixtures import write_tree
+from ethics import compile_ethics
+from ethics.tests.fixtures import write_tree
 
 try:
     import dspy
@@ -15,7 +15,7 @@ except ImportError:  # DSPy が無い環境では、このファイルのテス�
     dspy = None
 
 if dspy is not None:
-    from ethic_layer.dspy_adapter import (
+    from ethics.dspy_adapter import (
         EthicsViolation,
         Governed,
         Judge,

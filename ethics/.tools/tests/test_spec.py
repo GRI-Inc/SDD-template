@@ -4,8 +4,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from ethic_layer.spec import lint
-from ethic_layer.tests.fixtures import CUSTOMS, IDEALS, PRINCIPLES, RULES, SCAFFOLD, write_tree
+from ethics.spec import lint
+from ethics.tests.fixtures import CUSTOMS, IDEALS, PRINCIPLES, RULES, SCAFFOLD, write_tree
 
 
 def codes(overrides: dict | None = None) -> list[str]:

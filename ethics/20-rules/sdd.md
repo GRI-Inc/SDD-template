@@ -40,7 +40,7 @@ Pull Request の本文には、根拠となる仕様 Markdown への相対リン
 - 検査: deterministic guards/protected_paths.py
 - 違反時: block
 
-エージェントが作る Pull Request に、理念・原則・規則の条文、ガード、`ethic_layer/`、プロジェクト憲章、`WORKFLOW.md`、CI の定義の変更を含めてはならない。変更が必要だと考えた場合は、`sdd:backlog` の Issue として起票する。
+エージェントが作る Pull Request に、`ethics/`（慣習を除く条文、ガード、執行の仕組み）、プロジェクト憲章、`WORKFLOW.md`、`AGENTS.md`、`CLAUDE.md`、CI の定義の変更を含めてはならない。変更が必要だと考えた場合は、`sdd:backlog` の Issue として起票する。
 
 ### 適合例
 

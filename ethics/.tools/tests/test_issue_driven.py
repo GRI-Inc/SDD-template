@@ -6,11 +6,11 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from ethic_layer import compile_ethics
-from ethic_layer.__main__ import main
-from ethic_layer.prcheck import build_event, check_pr, report, unchecked
-from ethic_layer.sync import BEGIN, END, SyncError, sync_file, sync_text
-from ethic_layer.tests.fixtures import CUSTOMS, REPO_ROOT, SCAFFOLD, write_tree
+from ethics import compile_ethics
+from ethics.cli import main
+from ethics.prcheck import build_event, check_pr, report, unchecked
+from ethics.sync import BEGIN, DEFAULT_TARGETS, END, SyncError, sync_file, sync_text
+from ethics.tests.fixtures import CUSTOMS, REPO_ROOT, SCAFFOLD, write_tree
 
 GOOD_BODY = """\
 ## 関連する仕様
@@ -81,18 +81,36 @@ class SyncTest(unittest.TestCase):
         self.assertEqual(0, main(["sync", *args]))
         self.assertEqual(0, main(["sync", *args, "--check"]))
 
+    def test_cli_syncs_several_files_with_the_same_block(self):
+        agents = self.target.with_name("AGENTS.md")
+        agents.write_text(f"# AGENTS\n\n{BEGIN}\n{END}\n", encoding="utf-8")
+        args = [str(self.target), str(agents), "--ethics-dir", str(self.root)]
+        self.assertEqual(1, main(["sync", *args, "--check"]))
+        self.assertEqual(0, main(["sync", *args]))
+        self.assertEqual(0, main(["sync", *args, "--check"]))
+
+        def block(path: Path) -> str:
+            text = path.read_text(encoding="utf-8")
+            return text[text.index(BEGIN) : text.index(END)]
+
+        self.assertEqual(block(self.target), block(agents))
+        # 1 つでも同期できないファイルがあれば失敗する。
+        self.assertEqual(1, main(["sync", str(self.target), str(agents.with_name("missing.md")), "--ethics-dir", str(self.root)]))
+
 
 class RepositoryStateTest(unittest.TestCase):
     """このリポジトリ自体の規範と、エージェント向けプロンプトの整合。"""
 
-    def test_workflow_prompt_matches_ethics(self):
-        workflow = REPO_ROOT / "WORKFLOW.md"
-        if not workflow.exists():
-            self.skipTest("WORKFLOW.md がありません")
-        self.assertFalse(
-            sync_file(workflow, compile_ethics(SCAFFOLD), check=True),
-            "WORKFLOW.md が ethics/ と一致していません。`python3 -m ethic_layer sync` を実行してください",
-        )
+    def test_agent_prompts_match_ethics(self):
+        compiled = compile_ethics(SCAFFOLD)
+        targets = [REPO_ROOT / name for name in DEFAULT_TARGETS if (REPO_ROOT / name).exists()]
+        if not targets:
+            self.skipTest("同期する対象のファイルがありません")
+        for target in targets:
+            self.assertFalse(
+                sync_file(target, compiled, check=True),
+                f"{target.name} が ethics/ と一致していません。`python3 -m ethics sync` を実行してください",
+            )
 
 
 class PrGuardTest(unittest.TestCase):
@@ -121,7 +139,11 @@ class PrGuardTest(unittest.TestCase):
             "ethics/10-principles/sdd.md",
             "ethics/20-rules/core.md",
             "ethics/guards/protected_paths.py",
-            "ethic_layer/compiler.py",
+            "ethics/.tools/compiler.py",
+            "ethics/__init__.py",
+            "ethics/README.md",
+            "AGENTS.md",
+            "CLAUDE.md",
             "spec-ai-writer/docs/CONSTITUTION.md",
             "WORKFLOW.md",
             ".github/workflows/ci.yml",

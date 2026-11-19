@@ -26,7 +26,7 @@ from .compiler import Compiled, Violation
 ETHICS_FIELD = "ethics"
 _RESERVED_OUTPUT_KEYS = {"history", "termination_reason", "ethics_log", "ethics_digest", "ethics_violations"}
 
-_LEDGER: ContextVar = ContextVar("ethic_layer_ledger", default=None)
+_LEDGER: ContextVar = ContextVar("ethics_ledger", default=None)
 
 
 class EthicsViolation(Exception):

@@ -57,7 +57,7 @@ flowchart LR
 
 | 経路 | 仕組み | 対象 |
 |---|---|---|
-| プロンプトへの注入 | 条文集を [`WORKFLOW.md`](WORKFLOW.md) のエージェント向けプロンプトへ自動で書き込む | 全条文 |
+| プロンプトへの注入 | 条文集を、[`WORKFLOW.md`](WORKFLOW.md)（無人実行のプロンプト）と [`AGENTS.md`](AGENTS.md)（対話で作業するエージェント向けの指示書）へ自動で書き込む | 全条文 |
 | Pull Request の自動検査 | CI が、決定的に検査できる規則を Pull Request ごとに実行する | `適用点: pr` かつ `検査: deterministic` の規則 |
 | 人間のレビュー | 受入のときに、自動では検査できない条文を確認する | `検査: judge` の条文 |
 
@@ -72,11 +72,11 @@ flowchart LR
 3. 構造を検査し、エージェントのプロンプトへ反映する
 
    ```bash
-   python3 -m ethic_layer lint ethics --strict --tree
-   python3 -m ethic_layer sync
+   python3 -m ethics lint ethics --strict --tree
+   python3 -m ethics sync
    ```
 
-4. 条文と `WORKFLOW.md` の差分を、同じ Pull Request に含める
+4. 条文と、`WORKFLOW.md`・`AGENTS.md` の差分を、同じ Pull Request に含める
 
 根拠の欠落などの構造の誤りと、プロンプトへの反映漏れは、CI が検出します。
 
@@ -106,38 +106,41 @@ flowchart LR
 5. `ethics/` の条文を、自分の組織の規範に合わせて書き換える。`ethics/guards/` のガードが持つ保護対象と組織内ドメインも見直す
 6. 仕様を Markdown に書き、[Issue テンプレート](.github/ISSUE_TEMPLATE/sdd-task.yml)でタスクを切り、承認したら `sdd:todo` と `symphony` を付ける
 
-規範の仕組みは Python の標準ライブラリだけで動きます（Python 3.9 以上）。
+規範の仕組みは Python の標準ライブラリだけで動きます（Python 3.9 以上）。条文と仕組みは `ethics/` にまとまっているので、ディレクトリごと別のリポジトリへ持ち出せます。
 
 ## コマンド
 
 | コマンド | 用途 |
 |---|---|
-| `python3 -m ethic_layer lint ethics --strict --tree` | 条文の構造を検査し、根拠のつながりを木で表示する |
-| `python3 -m ethic_layer compile ethics` | 条文集プロンプトと、適用点ごとの検査の一覧を表示する |
-| `python3 -m ethic_layer sync` | 条文集を `WORKFLOW.md` のプロンプトへ書き込む（`--check` で反映漏れを検出） |
-| `python3 -m ethic_layer check-pr ethics --files-from <変更一覧> --body-file <本文>` | Pull Request に、決定的に検査できる規則を実行する |
-| `python3 -m unittest discover -b -s ethic_layer/tests -t .` | 規範の仕組みのテストを実行する |
+| `python3 -m ethics lint ethics --strict --tree` | 条文の構造を検査し、根拠のつながりを木で表示する |
+| `python3 -m ethics compile ethics` | 条文集プロンプトと、適用点ごとの検査の一覧を表示する |
+| `python3 -m ethics sync` | 条文集を `WORKFLOW.md` と `AGENTS.md` へ書き込む（`--check` で反映漏れを検出） |
+| `python3 -m ethics check-pr ethics --files-from <変更一覧> --body-file <本文>` | Pull Request に、決定的に検査できる規則を実行する |
+| `python3 -m ethics test` | 規範の仕組みのテストを実行する |
 
 ## ディレクトリ構成
 
 ```
 SDD-template/
 ├── README.md                    # このファイル
+├── AGENTS.md                    # リポジトリで作業するコーディングエージェント向けの指示書
+├── CLAUDE.md                    # Claude Code 向け。AGENTS.md を読み込む
 ├── WORKFLOW.md                  # Symphony のワークフロー定義と、エージェント向けプロンプト
-├── ethics/                      # エージェントの行動規範（倫理階層）
+├── ethics/                      # エージェントの行動規範（倫理階層）。条文と仕組みをまとめて持つ
 │   ├── README.md               # 書式、支配構造の原則、検査、接続方法
 │   ├── 00-ideals.md            # 理念
 │   ├── 10-principles/          # 原則
 │   ├── 20-rules/               # 規則
 │   ├── 30-customs/             # 慣習
-│   └── guards/                 # 規則を決定的に検査するコード
-├── ethic_layer/                 # 規範の検査・コンパイル・執行の仕組み
-│   ├── spec.py                 # 条文のパーサと構造 lint
-│   ├── compiler.py             # 条文集プロンプトとガード登録表へのコンパイル
-│   ├── sync.py                 # エージェント向けプロンプトへの書き込み
-│   ├── prcheck.py              # Pull Request の検査
-│   ├── dspy_adapter.py         # DSPy のプログラムへの接続
-│   └── tests/                  # テスト
+│   ├── guards/                 # 規則を決定的に検査するコード
+│   └── .tools/                 # 条文を適用するための道具（検査・コンパイル・執行）
+│       ├── cli.py              # `python3 -m ethics` のコマンド
+│       ├── spec.py             # 条文のパーサと構造 lint
+│       ├── compiler.py         # 条文集プロンプトとガード登録表へのコンパイル
+│       ├── sync.py             # エージェント向けプロンプトへの書き込み
+│       ├── prcheck.py          # Pull Request の検査
+│       ├── dspy_adapter.py     # DSPy のプログラムへの接続
+│       └── tests/              # テスト
 ├── .github/
 │   ├── ISSUE_TEMPLATE/         # タスクの Issue テンプレート
 │   ├── pull_request_template.md # Pull Request の契約
@@ -187,8 +190,8 @@ SDD-template/
 
 ```python
 import dspy
-from ethic_layer import compile_ethics
-from ethic_layer.dspy_adapter import Governed, Judge, guard_tools, make_metric, with_ethics
+from ethics import compile_ethics
+from ethics.dspy_adapter import Governed, Judge, guard_tools, make_metric, with_ethics
 
 compiled = compile_ethics("ethics")
 agent = Governed(
@@ -214,6 +217,7 @@ metric = make_metric(compiled, my_task_metric, judge=Judge(lm=judge_lm))
 
 ## ドキュメント
 
+- [AGENTS.md](AGENTS.md) - リポジトリで作業するコーディングエージェント向けの指示書（Claude Code は [CLAUDE.md](CLAUDE.md) 経由で読み込む）
 - [ethics/README.md](ethics/README.md) - 行動規範の書式、検査、接続方法
 - [docs/guides/issue-driven-sdd.md](docs/guides/issue-driven-sdd.md) - Issue 駆動の運用ガイド
 - [docs/README.md](docs/README.md) - 補足資料の索引

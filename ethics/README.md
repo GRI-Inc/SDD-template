@@ -6,8 +6,8 @@ AI エージェントに守らせる規範を、効力の強さで 4 層に分�
 このリポジトリでは、Issue 駆動で動くエージェントの行動規範そのものです。**ここに条文を追記すれば、エージェントはその規範に従って動くようになります。** 運用の全体像は [Issue 駆動開発ガイド](../docs/guides/issue-driven-sdd.md) を参照してください。
 
 ```bash
-python3 -m ethic_layer lint ethics --strict --tree   # 構造を検査する
-python3 -m ethic_layer sync                          # WORKFLOW.md のプロンプトへ反映する
+python3 -m ethics lint ethics --strict --tree   # 構造を検査する
+python3 -m ethics sync                          # WORKFLOW.md と AGENTS.md へ反映する
 ```
 
 ## 階層
@@ -36,7 +36,12 @@ ethics/
   20-rules/           規則
   30-customs/         慣習
   guards/             規則を決定的に検査するコード
+  .tools/             条文を適用するための道具（Python）。検査・コンパイル・執行を行う
+  __init__.py         `python3 -m ethics` と `from ethics import ...` の入口
+  __main__.py
 ```
+
+条文と仕組みをこのディレクトリにまとめているので、`ethics/` ごと別のリポジトリへ持ち出せます。コマンドは、`ethics/` を置いたディレクトリ（リポジトリのルート）で実行します。
 
 各層のファイルは分野ごとに分割してかまいません。ID は ethics/ 全体で一意にします。
 
@@ -91,7 +96,7 @@ tier: rule
 ## lint
 
 ```bash
-python3 -m ethic_layer lint ethics --strict --tree
+python3 -m ethics lint ethics --strict --tree
 ```
 
 `.github/scripts/lint_ethics.py` も同じ検査を実行します。
@@ -119,10 +124,10 @@ python3 -m ethic_layer lint ethics --strict --tree
 
 ## コンパイル
 
-`ethic_layer/` は、lint に合格した条文集を実行時の成果物へ変換します。lint でエラーが出る条文集はコンパイルできません。
+`ethics/.tools/` は、lint に合格した条文集を実行時の成果物へ変換します。lint でエラーが出る条文集はコンパイルできません。
 
 ```bash
-python3 -m ethic_layer compile ethics
+python3 -m ethics compile ethics
 ```
 
 | 成果物 | 取得方法 | 用途 |
@@ -159,16 +164,16 @@ Issue 駆動で動くエージェント（Symphony など）には、次の 2 �
 ### プロンプトへの注入
 
 ```bash
-python3 -m ethic_layer sync            # WORKFLOW.md を更新する
-python3 -m ethic_layer sync --check    # 反映漏れがあれば失敗する（CI 用）
+python3 -m ethics sync            # WORKFLOW.md と AGENTS.md を更新する
+python3 -m ethics sync --check    # 反映漏れがあれば失敗する（CI 用）
 ```
 
-`WORKFLOW.md` の `<!-- ethics:begin -->` と `<!-- ethics:end -->` の間を、4 層すべての条文集で置き換えます。末尾には規範の版（digest）が入り、エージェントはそれを Workpad に記録します。この区間は生成物なので、手で編集しないでください。
+`WORKFLOW.md`（Issue 駆動のランナーが読むプロンプト）と `AGENTS.md`（リポジトリで作業するコーディングエージェントが読む指示書）の、`<!-- ethics:begin -->` と `<!-- ethics:end -->` の間を、4 層すべての条文集で置き換えます。対象のファイルを引数で指定することもできます。末尾には規範の版（digest）が入り、エージェントはそれを Workpad に記録します。この区間は生成物なので、手で編集しないでください。
 
 ### Pull Request の自動検査
 
 ```bash
-python3 -m ethic_layer check-pr ethics --files-from files.txt --body-file body.md --labels symphony --head symphony/12-fix
+python3 -m ethics check-pr ethics --files-from files.txt --body-file body.md --labels symphony --head symphony/12-fix
 ```
 
 `適用点: pr` かつ `検査: deterministic` の規則を実行します。CI では [ethics-pr-guard](../.github/workflows/ethics-pr-guard.yml) が Pull Request ごとに実行します。規則とガードを追加すれば、CI の定義を変えずに検査が増えます。
@@ -181,12 +186,12 @@ CI は base ブランチ側の条文とガードで検査します。Pull Reques
 
 DSPy で組んだプログラムに規範を守らせる場合の接続です。Issue 駆動のエージェント（Symphony から起動するコーディングエージェント）はこの経路を通りません。
 
-`ethic_layer/dspy_adapter.py` が、コンパイル結果を DSPy のプログラムに接続します（DSPy 3.5.0 で動作確認）。
+`ethics/.tools/dspy_adapter.py` が、コンパイル結果を DSPy のプログラムに接続します（DSPy 3.5.0 で動作確認）。
 
 ```python
 import dspy
-from ethic_layer import compile_ethics
-from ethic_layer.dspy_adapter import Governed, Judge, guard_tools, make_metric, with_ethics
+from ethics import compile_ethics
+from ethics.dspy_adapter import Governed, Judge, guard_tools, make_metric, with_ethics
 
 compiled = compile_ethics("ethics")
 
@@ -226,7 +231,7 @@ optimized = dspy.GEPA(metric=metric, auto="light", reflection_lm=reflection_lm).
 ### テスト
 
 ```bash
-python3 -m unittest discover -s ethic_layer/tests -t .
+python3 -m ethics test
 ```
 
 DSPy が入っていない環境では、アダプタのテストは飛ばされます。

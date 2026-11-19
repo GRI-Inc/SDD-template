@@ -205,6 +205,9 @@ def load(root: Path, findings: list[Finding]) -> list[Article]:
     for path in sorted(root.rglob("*.md")):
         if path.name.lower() == "readme.md":
             continue
+        # ドットで始まるディレクトリ（道具を置く `.tools/` など）は条文として読まない。
+        if any(part.startswith(".") for part in path.relative_to(root).parts):
+            continue
         lines = path.read_text(encoding="utf-8").splitlines()
         meta, start = parse_frontmatter(lines)
         tier = meta.get("tier", "")

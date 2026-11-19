@@ -1,10 +1,11 @@
 """倫理階層のコマンドライン。
 
 使い方:
-  python3 -m ethic_layer lint [ethics_dir] [--strict] [--tree]
-  python3 -m ethic_layer compile [ethics_dir] [--json PATH]
-  python3 -m ethic_layer sync [WORKFLOW.md] [--check]
-  python3 -m ethic_layer check-pr [ethics_dir] --files-from PATH [--body-file PATH] [--labels a,b] [--head BRANCH]
+  python3 -m ethics lint [ethics_dir] [--strict] [--tree]
+  python3 -m ethics compile [ethics_dir] [--json PATH]
+  python3 -m ethics sync [FILE ...] [--check]
+  python3 -m ethics check-pr [ethics_dir] --files-from PATH [--body-file PATH] [--labels a,b] [--head BRANCH]
+  python3 -m ethics test
 """
 
 from __future__ import annotations
@@ -16,7 +17,7 @@ from pathlib import Path
 from .compiler import EthicsCompileError, compile_ethics
 from .prcheck import build_event, report
 from .spec import TIER_LABEL, TIERS, format_tree, lint
-from .sync import SyncError, sync_file
+from .sync import DEFAULT_TARGETS, SyncError, sync_file
 
 
 def run_lint(args: argparse.Namespace) -> int:
@@ -70,19 +71,36 @@ def run_compile(args: argparse.Namespace) -> int:
 
 
 def run_sync(args: argparse.Namespace) -> int:
+    # 対象を省略したときは、既定のファイルのうち存在するものを同期する。
+    targets = args.targets or [t for t in DEFAULT_TARGETS if Path(t).exists()]
+    if not targets:
+        print(f"同期する対象がありません（既定: {', '.join(DEFAULT_TARGETS)}）", file=sys.stderr)
+        return 1
+
     try:
         compiled = compile_ethics(args.ethics_dir)
-        changed = sync_file(args.target, compiled, check=args.check)
-    except (EthicsCompileError, SyncError, OSError) as err:
+    except EthicsCompileError as err:
         print(err, file=sys.stderr)
         return 1
 
-    if args.check and changed:
-        print(f"{args.target} の行動規範が ethics/ と一致していません。次を実行してください:")
-        print(f"  python3 -m ethic_layer sync {args.target}")
+    stale = []
+    for target in targets:
+        try:
+            changed = sync_file(target, compiled, check=args.check)
+        except (SyncError, OSError) as err:
+            print(f"{target}: {err}", file=sys.stderr)
+            return 1
+        if args.check and changed:
+            stale.append(target)
+            continue
+        state = "更新しました" if changed else "最新です"
+        print(f"{target}: {state}（規範の版 {compiled.digest[:12]}）")
+
+    if stale:
+        print(f"行動規範が ethics/ と一致していません: {', '.join(stale)}")
+        print("次を実行してください:")
+        print("  python3 -m ethics sync")
         return 1
-    state = "更新しました" if changed else "最新です"
-    print(f"{args.target}: {state}（規範の版 {compiled.digest[:12]}）")
     return 0
 
 
@@ -101,8 +119,25 @@ def run_check_pr(args: argparse.Namespace) -> int:
     return 0 if passed else 1
 
 
+def run_test(args: argparse.Namespace) -> int:
+    """道具自身のテストを実行する。
+
+    `.tools/` はドットで始まるので、unittest の探索（パスからモジュール名を作る）では
+    辿れない。`ethics.tests` 配下のモジュールを名前で読み込んで実行する。
+    """
+    import importlib
+    import pkgutil
+    import unittest
+
+    package = importlib.import_module("ethics.tests")
+    names = sorted(f"ethics.tests.{m.name}" for m in pkgutil.iter_modules(package.__path__) if m.name.startswith("test_"))
+    suite = unittest.defaultTestLoader.loadTestsFromNames(names)
+    result = unittest.TextTestRunner(buffer=True, verbosity=2 if args.verbose else 1).run(suite)
+    return 0 if result.wasSuccessful() else 1
+
+
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(prog="ethic_layer", description="倫理階層（ethics/）の検査とコンパイル")
+    parser = argparse.ArgumentParser(prog="ethics", description="倫理階層（ethics/）の検査とコンパイル")
     sub = parser.add_subparsers(dest="command", required=True)
 
     p_lint = sub.add_parser("lint", help="条文の構造を検査する")
@@ -117,7 +152,7 @@ def main(argv: list[str] | None = None) -> int:
     p_compile.set_defaults(func=run_compile)
 
     p_sync = sub.add_parser("sync", help="エージェント向けプロンプトのファイルへ条文集を書き込む")
-    p_sync.add_argument("target", nargs="?", default="WORKFLOW.md")
+    p_sync.add_argument("targets", nargs="*", help=f"同期するファイル（省略時: {' と '.join(DEFAULT_TARGETS)}）")
     p_sync.add_argument("--ethics-dir", default="ethics")
     p_sync.add_argument("--check", action="store_true", help="書き込まず、同期漏れがあれば失敗する")
     p_sync.set_defaults(func=run_sync)
@@ -130,6 +165,10 @@ def main(argv: list[str] | None = None) -> int:
     p_pr.add_argument("--head", default="", help="Pull Request のブランチ名")
     p_pr.add_argument("--title", default="")
     p_pr.set_defaults(func=run_check_pr)
+
+    p_test = sub.add_parser("test", help="道具自身のテストを実行する")
+    p_test.add_argument("-v", "--verbose", action="store_true")
+    p_test.set_defaults(func=run_test)
 
     args = parser.parse_args(argv)
     return args.func(args)

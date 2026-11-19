@@ -9,26 +9,32 @@ from __future__ import annotations
 AGENT_LABEL = "symphony"
 AGENT_BRANCH_PREFIX = "symphony/"
 
-# 末尾が `/` のものは、その配下すべてを指す。慣習（ethics/30-customs/）は含めない。
+# 末尾が `/` のものは、その配下すべてを指す。
+# `ethics/` は条文・ガード・条文を適用する道具（.tools）をまとめて持つので、全体を保護する。
 PROTECTED = (
-    "ethics/00-ideals.md",
-    "ethics/10-principles/",
-    "ethics/20-rules/",
-    "ethics/guards/",
-    "ethic_layer/",
+    "ethics/",
     "spec-ai-writer/docs/CONSTITUTION.md",
     "WORKFLOW.md",
+    "AGENTS.md",
+    "CLAUDE.md",
     ".github/workflows/",
     ".github/scripts/",
 )
+
+# 保護対象の中で、エージェントが変更してよいもの。慣習はチームの裁量で改正できる層。
+ALLOWED = ("ethics/30-customs/",)
 
 
 def is_agent_pr(event: dict) -> bool:
     return AGENT_LABEL in (event.get("labels") or []) or str(event.get("head") or "").startswith(AGENT_BRANCH_PREFIX)
 
 
+def _matches(path: str, patterns: tuple) -> bool:
+    return any(path == p or (p.endswith("/") and path.startswith(p)) for p in patterns)
+
+
 def is_protected(path: str) -> bool:
-    return any(path == p or (p.endswith("/") and path.startswith(p)) for p in PROTECTED)
+    return _matches(path, PROTECTED) and not _matches(path, ALLOWED)
 
 
 def guard(event: dict) -> list[str]:

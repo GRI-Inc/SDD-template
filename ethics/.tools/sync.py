@@ -11,9 +11,14 @@ from pathlib import Path
 
 from .compiler import Compiled
 
+# 対象を指定しないときに同期するファイル。
+#   WORKFLOW.md: Issue 駆動のランナー（Symphony）が読む、エージェント向けプロンプト
+#   AGENTS.md:   リポジトリで作業するコーディングエージェントが読む指示書
+DEFAULT_TARGETS = ("WORKFLOW.md", "AGENTS.md")
+
 BEGIN = "<!-- ethics:begin -->"
 END = "<!-- ethics:end -->"
-NOTICE = "<!-- この区間は `python3 -m ethic_layer sync` が ethics/ から生成します。手で編集しないでください。 -->"
+NOTICE = "<!-- この区間は `python3 -m ethics sync` が ethics/ から生成します。手で編集しないでください。 -->"
 
 
 class SyncError(Exception):
