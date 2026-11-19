@@ -13,12 +13,12 @@ Issue 駆動で動くエージェントの既定の進め方です。理由を�
 
 計画・受入条件・検証・進捗メモは、`## SDD Workpad` で始まる 1 つのコメントを更新し続けて記録する。完了報告のコメントを別に投稿しない。
 
-## C-5 設計判断は docs/sdd/ に書いて Pull Request に含める
+## C-5 設計判断は docs/specs/ に書いて Pull Request に含める
 
 - 強度: SHOULD
-- 根拠: P-5
+- 根拠: P-8, P-5
 
-Issue が設計判断を求めている場合は、`docs/sdd/<Issue番号>-<件名>.md` に設計計画を書き、同じ Pull Request に含める。
+Issue が設計判断を求めている場合は、`docs/specs/<Issue番号>-<件名>.md` に設計計画を書き、同じ Pull Request に含める。
 
 ## C-6 閉じた Pull Request のブランチを再利用しない
 

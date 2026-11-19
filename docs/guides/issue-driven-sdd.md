@@ -8,15 +8,15 @@ SDD と Symphony はどちらも「唯一の情報源」を持ちますが、対
 
 | 観点 | SDD | Symphony |
 |------|-----|----------|
-| 唯一の情報源 | 仕様 Markdown（repo 内） | Issue の Workpad コメント |
+| 唯一の情報源 | 仕様 Markdown（`docs/specs/`） | Issue の Workpad コメント |
 | 答える問い | **何を・なぜ** 作るか | **どこまで** 進んだか |
 | 更新する主体 | 人間（AI は補助） | エージェント |
 
 この 2 つを対立させず、**What / Why は repo の仕様、How / Status は Issue** に置くのがこの運用の骨格です。
 
-- 仕様（工程①〜③）は repo の Markdown に置き、人間が承認します。エージェントは読むだけで、憲章は変更しません。
+- 仕様（工程①〜③）は [`docs/specs/`](../specs/README.md) の Markdown に置き、人間が承認します（原則 P-8）。エージェントは読むだけで、憲章は変更しません。
 - タスク（工程④）は **タスク 1 件 = Issue 1 件 = PR 1 件** に対応させます。SDD の「30 分レビュー粒度」は、Symphony の「1 Issue = 1 エージェント実行 = 1 PR」とそのまま重なります。
-- 実装・検証（工程⑤⑥）は Issue の Workpad と PR が記録そのものになります。`docs/sdd/` に手で実装記録を書く必要はなくなります。
+- 実装・検証（工程⑤⑥）は Issue の Workpad と PR が記録そのものになります。仕様とは別に、手で実装記録を書く必要はなくなります。
 - 運用（工程⑦）で見つかったフィードバックは `sdd:backlog` の Issue として投入します。
 
 ## 7 つの工程と Issue 状態の対応
@@ -148,13 +148,14 @@ git diff --name-only origin/main...HEAD > /tmp/files.txt
 python3 -m ethics check-pr ethics --files-from /tmp/files.txt --body-file path/to/pr_body.md --labels symphony
 ```
 
-## `docs/sdd/` の運用変更
+## 仕様の置き場所：`docs/specs/`
 
-これまで `docs/sdd/<日付>-<件名>.md` に工程②〜⑥をまとめて書いていました。Issue 駆動に移行すると、工程⑤⑥は Issue の Workpad と PR に自動で残るため、repo に残すのは **工程②③（仕様・設計）だけ** になります。
+仕様は `docs/specs/` に記述します（原則 P-8）。従来は 1 つのファイルに工程②〜⑥をまとめて書いていましたが、Issue 駆動では、工程⑤⑥は Issue の Workpad と PR に自動で残るため、repo に残すのは **工程②③（仕様・設計）だけ** になります。
 
 | 項目 | 従来 | Issue 駆動 |
 |------|------|-----------|
-| ファイル名 | `<日付>-<件名>.md` | `<Issue番号>-<件名>.md` |
+| 置き場所 | プロジェクトごとの任意の場所 | `docs/specs/` |
+| 設計計画のファイル名 | `<日付>-<件名>.md` | `<Issue番号>-<件名>.md` |
 | 書く工程 | ②〜⑥ | ②③（設計判断がある場合のみ） |
 | ⑤ 実装記録 | ファイルに手書き | Issue の Workpad |
 | ⑥ 検証記録 | ファイルに手書き | Workpad の Validation と PR の仕様差分 |

@@ -12,7 +12,7 @@
 
 | 置き場所 | 答える問い | 更新する主体 |
 |---|---|---|
-| 仕様（リポジトリ内の Markdown） | **何を・なぜ** 作るか | 人間（AI は補助） |
+| 仕様（[`docs/specs/`](docs/specs/README.md) の Markdown） | **何を・なぜ** 作るか | 人間（AI は補助） |
 | Issue と Pull Request | **どこまで** 進んだか | エージェント |
 | 行動規範（`ethics/`） | エージェントは**どう振る舞うべきか** | 人間 |
 
@@ -104,7 +104,7 @@ flowchart LR
 3. `WORKFLOW.md` の `tracker.provider.repo` を、自分の `owner/repo` に書き換える
 4. ラベルを作成し、[openai/symphony](https://github.com/openai/symphony) の手順でランナーを用意する（[セットアップ手順](docs/guides/issue-driven-sdd.md#symphony-のセットアップ)）
 5. `ethics/` の条文を、自分の組織の規範に合わせて書き換える。`ethics/guards/` のガードが持つ保護対象と組織内ドメインも見直す
-6. 仕様を Markdown に書き、[Issue テンプレート](.github/ISSUE_TEMPLATE/sdd-task.yml)でタスクを切り、承認したら `sdd:todo` と `symphony` を付ける
+6. 仕様を `docs/specs/` に書き、[Issue テンプレート](.github/ISSUE_TEMPLATE/sdd-task.yml)でタスクを切り、承認したら `sdd:todo` と `symphony` を付ける
 
 規範の仕組みは Python の標準ライブラリだけで動きます（Python 3.9 以上）。条文と仕組みは `ethics/` にまとまっているので、ディレクトリごと別のリポジトリへ持ち出せます。
 
@@ -146,8 +146,9 @@ SDD-template/
 │   ├── pull_request_template.md # Pull Request の契約
 │   ├── scripts/                # CI から呼ぶスクリプト
 │   └── workflows/              # CI（規範の検査、Pull Request の検査、テスト）
-├── docs/                        # 補足資料
+├── docs/                        # 仕様と補足資料
 │   ├── README.md               # ガイドの索引
+│   ├── specs/                  # 仕様（何を・なぜ作るか）。仕様はここに記述する
 │   ├── guides/                 # 実践ガイド（Issue 駆動開発ガイドを含む）
 │   ├── tools/                  # プロンプト集、スクリプト集、Git コマンド一覧など
 │   └── conversion/             # 既存文書から Markdown への変換ガイド

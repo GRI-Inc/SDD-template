@@ -8,7 +8,7 @@
 
 ## 関連する仕様
 
-<!-- 根拠となる仕様 Markdown への相対リンク。必須。例: [02-planning-requirement.md](examples/02-planning-requirement.md#機能要件) -->
+<!-- 根拠となる仕様 Markdown（docs/specs/ 配下）への相対リンク。必須。例: [customer-management.md](docs/specs/customer-management.md#機能要件) -->
 
 ## 仕様差分
 
