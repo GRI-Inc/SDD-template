@@ -1,0 +1,52 @@
+name: Ethics lint
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "ethics/**"
+      - "ethic_layer/**"
+      - ".github/scripts/lint_ethics.py"
+      - ".github/workflows/ethics-lint.yml"
+  pull_request:
+    paths:
+      - "ethics/**"
+      - "ethic_layer/**"
+      - ".github/scripts/lint_ethics.py"
+      - ".github/workflows/ethics-lint.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  lint-ethics:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Validate ethics hierarchy
+        run: python3 .github/scripts/lint_ethics.py ethics --strict
+
+      - name: Compile ethics
+        run: python3 -m ethic_layer compile ethics
+
+  test-ethic-layer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install DSPy
+        run: pip install "dspy==3.5.0"
+
+      - name: Run tests
+        run: python -m unittest discover -s ethic_layer/tests -t .
