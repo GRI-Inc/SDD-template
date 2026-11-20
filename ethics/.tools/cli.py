@@ -3,6 +3,7 @@
 使い方:
   python3 -m ethics lint [ethics_dir] [--strict] [--tree]
   python3 -m ethics compile [ethics_dir] [--json PATH]
+  python3 -m ethics coverage [ethics_dir] [--judge]
   python3 -m ethics sync [FILE ...] [--check]
   python3 -m ethics check-pr [ethics_dir] --files-from PATH [--body-file PATH] [--labels a,b] [--head BRANCH]
   python3 -m ethics test
@@ -15,6 +16,8 @@ import sys
 from pathlib import Path
 
 from .compiler import EthicsCompileError, compile_ethics
+from .coverage import coverage, render
+from .scenarios import KINDS, load_scenarios
 from .prcheck import build_event, report
 from .spec import TIER_LABEL, TIERS, format_tree, lint
 from .sync import DEFAULT_TARGETS, SyncError, sync_file
@@ -37,6 +40,10 @@ def run_lint(args: argparse.Namespace) -> int:
     warnings = len(findings) - errors
     counts = "、".join(f"{TIER_LABEL[t]} {sum(1 for a in articles if a.tier == t)}" for t in TIERS)
     print(f"条文: {counts} / エラー {errors}、警告 {warnings}")
+    scenarios = load_scenarios(root)
+    if scenarios:
+        kinds = "、".join(f"{kind} {sum(1 for s in scenarios if s.kind == kind)}" for kind in KINDS)
+        print(f"検証セット: 場面 {len(scenarios)}（{kinds}）")
 
     if errors or (args.strict and warnings):
         print("倫理階層の検査に失敗しました")
@@ -67,6 +74,16 @@ def run_compile(args: argparse.Namespace) -> int:
         guards = ", ".join(a.id for a, _ in compiled.guards(point)) or "なし"
         judged = ", ".join(a.id for a in compiled.judged(point)) or "なし"
         print(f"{point}: ガード [{guards}] / 判定器 [{judged}]")
+    return 0
+
+
+def run_coverage(args: argparse.Namespace) -> int:
+    try:
+        compiled = compile_ethics(args.ethics_dir)
+    except EthicsCompileError as err:
+        print(err, file=sys.stderr)
+        return 1
+    print(render(coverage(compiled, judge=args.judge), judge=args.judge))
     return 0
 
 
@@ -150,6 +167,11 @@ def main(argv: list[str] | None = None) -> int:
     p_compile.add_argument("ethics_dir", nargs="?", default="ethics")
     p_compile.add_argument("--json", metavar="PATH", help="登録表を JSON で書き出す")
     p_compile.set_defaults(func=run_compile)
+
+    p_cov = sub.add_parser("coverage", help="条文ごとに、DSPy の経路での保証の水準を報告する")
+    p_cov.add_argument("ethics_dir", nargs="?", default="ethics")
+    p_cov.add_argument("--judge", action="store_true", help="評価に判定器を使う設定で報告する")
+    p_cov.set_defaults(func=run_coverage)
 
     p_sync = sub.add_parser("sync", help="エージェント向けプロンプトのファイルへ条文集を書き込む")
     p_sync.add_argument("targets", nargs="*", help=f"同期するファイル（省略時: {' と '.join(DEFAULT_TARGETS)}）")
