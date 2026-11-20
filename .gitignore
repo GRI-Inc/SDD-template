@@ -1,4 +1,7 @@
 .DS_Store
 
-# Claude AI のローカル設定（個人設定を含むため、リポジトリに含めない）
-.claude/
+# Claude Code の設定。チームで共有するスキル（.claude/skills/）だけをリポジトリに含め、
+# 個人の設定（settings.local.json など）は含めない
+.claude/*
+!.claude/skills/
+CLAUDE.local.md
