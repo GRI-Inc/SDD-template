@@ -116,6 +116,7 @@ flowchart LR
 | `python3 -m ethics compile ethics` | 条文集プロンプトと、適用点ごとの検査の一覧を表示する |
 | `python3 -m ethics sync` | 条文集を `WORKFLOW.md` と `AGENTS.md` へ書き込む（`--check` で反映漏れを検出） |
 | `python3 -m ethics check-pr ethics --files-from <変更一覧> --body-file <本文>` | Pull Request に、決定的に検査できる規則を実行する |
+| `python3 -m ethics coverage ethics` | 条文ごとに、DSPy の経路での保証の水準（強制 / 検出 / 測定 / 対象外）を報告する |
 | `python3 -m ethics test` | 規範の仕組みのテストを実行する |
 
 ## ディレクトリ構成
@@ -133,13 +134,17 @@ SDD-template/
 │   ├── 20-rules/               # 規則
 │   ├── 30-customs/             # 慣習
 │   ├── guards/                 # 規則を決定的に検査するコード
+│   ├── evals/                  # 検証セット。支配構造が効いているかを確かめる、人間が正解を定めた場面
 │   └── .tools/                 # 条文を適用するための道具（検査・コンパイル・執行）
 │       ├── cli.py              # `python3 -m ethics` のコマンド
 │       ├── spec.py             # 条文のパーサと構造 lint
 │       ├── compiler.py         # 条文集プロンプトとガード登録表へのコンパイル
 │       ├── sync.py             # エージェント向けプロンプトへの書き込み
 │       ├── prcheck.py          # Pull Request の検査
+│       ├── scenarios.py        # 検証セットの読み込みと検査
+│       ├── coverage.py         # 網羅の報告（条文ごとの保証の水準）
 │       ├── dspy_adapter.py     # DSPy のプログラムへの接続
+│       ├── dominance.py        # 支配構造の評価（DSPy）
 │       └── tests/              # テスト
 ├── .github/
 │   ├── ISSUE_TEMPLATE/         # タスクの Issue テンプレート
