@@ -31,6 +31,15 @@ echo "$REPO"
 
 値を読み取れない場合は、何も変更せずに終了し、その旨を報告します。
 
+`WORKFLOW.md` の手順は、`origin` に対して fetch と push を行います。`origin` が対象のリポジトリを指していることを確かめます。
+
+```bash
+ORIGIN=$(git remote get-url origin | sed -E 's#\.git$##; s#^.*[:/]([^/]+/[^/]+)$#\1#')
+[ "$(echo "$ORIGIN" | tr 'A-Z' 'a-z')" = "$(echo "$REPO" | tr 'A-Z' 'a-z')" ] && echo "origin OK" || echo "origin が対象のリポジトリではありません: $ORIGIN"
+```
+
+`origin` が対象のリポジトリを指していない場合は、fetch も push もせず、何も変更せずに終了し、その旨を報告します。
+
 ### 2. Issue を 1 件選ぶ
 
 open で `symphony` ラベルの付いた Issue を取得します。
@@ -75,7 +84,7 @@ git worktree list
 | `{{ issue.title }}`、`{{ issue.state }}`、`{{ issue.labels }}`、`{{ issue.url }}`、`{{ issue.description }}` | `gh issue view <番号> -R "$REPO" --json title,state,labels,url,body` の値 |
 | `{% if attempt %}` の継続コンテキスト | 選んだ Issue が `sdd:in-progress` のときに当てはまる |
 | `github_api` ツール | `gh` CLI（`-R "$REPO"` を付ける） |
-| 提供されたリポジトリコピー | 手順 3 で用意した worktree |
+| 作業ディレクトリ（`workspace.root`、`hooks`）、提供されたリポジトリコピー | 手順 3 で用意した worktree。`hooks` は実行しない（worktree の作成と `git fetch origin main` が代わりになる） |
 
 ### 5. 終了する
 
@@ -91,4 +100,6 @@ git worktree list
 - 行動規範に反する作業が必要になった
 - Issue の「関連する仕様」を特定できない（規則 R-7）
 
-このときは、理由を Issue の Workpad に記録し、ラベルを `sdd:human-review` に変えて終了します。Workpad に書き込むこともできない場合は、何も変更せずに終了し、理由を報告します。
+このときは、理由を Issue の Workpad に記録し、ラベルを `sdd:human-review` に変えて終了します。
+
+Issue を選ぶ前に進められなくなった場合（手順 1 で止まった場合）と、Workpad に書き込むこともできない場合は、何も変更せずに終了し、理由を報告します。

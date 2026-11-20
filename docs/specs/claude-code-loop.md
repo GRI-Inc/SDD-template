@@ -1,6 +1,6 @@
 # Claude Code による Issue 駆動ループ
 
-状態: 草案（人間の承認待ち）
+状態: 承認済み（2026-11-20、Pull Request 6 番のマージによる）
 
 ## 背景と目的
 
@@ -23,6 +23,7 @@ Issue 駆動の運用（[Issue 駆動開発ガイド](../guides/issue-driven-sdd
 
 - WORKFLOW.md の front matter にある `tracker.provider.repo` を対象にする。
 - GitHub への操作は、すべて対象のリポジトリを明示して行う（`gh ... -R <owner/repo>`）。フォーク元のリポジトリには、読み取りを含め一切の操作をしない。
+- WORKFLOW.md の手順は、git の `origin` に対して fetch と push を行う。`origin` が対象のリポジトリを指していないときは、fetch も push もせず、何も変更せずに終了する。
 
 ### Issue の選び方
 
@@ -65,6 +66,7 @@ WORKFLOW.md のプロンプト本文は、Symphony のランナーが値を埋�
 
 - 実行の途中で、人間に質問や確認を求めない。
 - 進められなくなった場合（必要な認証・権限・ツールが無い、push できない、規範に反する作業が必要、など）は、理由を Workpad に記録し、ラベルを `sdd:human-review` に変えて終了する。
+- Issue を選ぶ前に進められなくなった場合（対象のリポジトリを読み取れない、`origin` が対象のリポジトリを指していない）と、Workpad に書き込めない場合は、何も変更せずに終了し、理由を報告する。
 - 終了時の報告には、完了した作業とブロッカーだけを書く（慣習 C-8）。
 
 ### 行動規範
@@ -76,6 +78,7 @@ WORKFLOW.md のプロンプト本文は、Symphony のランナーが値を埋�
 | 条件 | 理由 |
 |---|---|
 | `gh` が対象のリポジトリに認証済みで、Issue・ラベル・Pull Request を操作できる | Issue の取得、ラベルの変更、Pull Request の作成に使う |
+| git の `origin` が対象のリポジトリを指している | WORKFLOW.md の手順は、`origin` に対して fetch と push を行う |
 | `git push` が、パスフレーズの入力などの対話なしで通る | 無人の実行では入力に応えられない |
 | `sdd:*` と `symphony` のラベルが作成済み | 工程の進行をラベルで表す |
 | Claude Code の権限設定が、`gh` と `git` の実行を確認なしで許可している | 確認の待ちでループが止まる |
