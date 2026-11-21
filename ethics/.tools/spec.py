@@ -16,6 +16,8 @@
   E011 deterministic と宣言したガードのファイルが無い
   E012 条文の本文が無い
   E013 条文が 1 つも無い
+  E014 検証セット（evals/）の場面の書式が不正
+  E015 検証セットの場面が、未定義の条文 ID を参照している
 
 警告:
   W001 理念を具体化する規則が 1 つも無い（執行手段が無い）
@@ -23,6 +25,7 @@
   W003 規則に `### 適合例` または `### 違反例` が無い
 
 下位条文が上位条文を「緩めて」いないかという意味の検査は行わない。
+検証セットの読み込みと検査は `scenarios.py` が担い、`lint` から呼び出す。
 標準ライブラリだけで動く。
 """
 
@@ -63,6 +66,9 @@ STRENGTH = {
 APPLY_POINTS = {"input", "plan", "tool_call", "output", "pr"}
 ON_VIOLATION = {"block", "refine", "escalate"}
 MAX_IDEALS = 7
+
+# 条文として読まないディレクトリ。検証セットは `scenarios.py` が読む。
+EVALS_DIR = "evals"
 
 ARTICLE_HEADING = re.compile(r"^## ([A-Z])-(\d+)\s+(\S.*)$")
 FIELD_LINE = re.compile(r"^- ([^:：]+?)\s*[:：]\s*(.*)$")
@@ -206,7 +212,11 @@ def load(root: Path, findings: list[Finding]) -> list[Article]:
         if path.name.lower() == "readme.md":
             continue
         # ドットで始まるディレクトリ（道具を置く `.tools/` など）は条文として読まない。
-        if any(part.startswith(".") for part in path.relative_to(root).parts):
+        parts = path.relative_to(root).parts
+        if any(part.startswith(".") for part in parts):
+            continue
+        # 検証セットは条文ではない。
+        if parts[0] == EVALS_DIR:
             continue
         lines = path.read_text(encoding="utf-8").splitlines()
         meta, start = parse_frontmatter(lines)
@@ -317,7 +327,21 @@ def has_rule_descendant(start: str, children: dict[str, list[Article]]) -> bool:
 
 
 def lint(root: Path) -> tuple[list[Article], list[Finding]]:
-    """条文と検査結果を返す。条文は ID が重複していても読み込んだ順にすべて含む。"""
+    """条文と検査結果を返す。条文の検査に加えて、検証セット（evals/）の検査も行う。"""
+    from .scenarios import lint_scenarios  # scenarios は spec の読み込み処理を使うので、ここで読み込む
+
+    articles, findings = lint_articles(root)
+    _, scenario_findings = lint_scenarios(root, {a.id for a in articles})
+    findings.extend(scenario_findings)
+    findings.sort(key=lambda f: (str(f.path), f.line, f.code))
+    return articles, findings
+
+
+def lint_articles(root: Path) -> tuple[list[Article], list[Finding]]:
+    """条文と、条文の検査結果を返す。条文は ID が重複していても読み込んだ順にすべて含む。
+
+    検証セットは見ない。コンパイルはこちらを使う（検証セットの不備で規範の配布を止めないため）。
+    """
     findings: list[Finding] = []
     articles = load(root, findings)
     if not articles:

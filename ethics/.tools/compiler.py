@@ -18,7 +18,7 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Callable
 
-from .spec import TIER_LABEL, TIERS, Article, Finding, lint, parse_check, split_list
+from .spec import TIER_LABEL, TIERS, Article, Finding, lint_articles, parse_check, split_list
 
 FROZEN_TIERS = ("ideal", "principle", "rule")
 DEFAULT_POINT = "output"
@@ -283,7 +283,7 @@ def compile_ethics(root: str | Path = "ethics") -> Compiled:
     root = Path(root)
     if not root.is_dir():
         raise EthicsCompileError(f"ディレクトリがありません: {root}")
-    articles, findings = lint(root)
+    articles, findings = lint_articles(root)
     errors = [f for f in findings if f.is_error]
     if errors:
         raise EthicsCompileError("倫理階層の検査に合格していないため、コンパイルできません", errors)
